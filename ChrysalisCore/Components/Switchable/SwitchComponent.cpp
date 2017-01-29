@@ -45,9 +45,17 @@ void CSwitchComponent::Initialize()
 void CSwitchComponent::SerializeProperties(Serialization::IArchive& archive)
 {
 	archive(m_isEnabled, "IsEnabled", "Enabled");
+	archive.doc("Is this switch currently enabled.");
 	archive(m_isSwitchedOn, "SwitchedOn", "Switched On");
+	archive.doc("Is this switch currently switch on.");
 	archive(m_isSingleUseOnly, "IsSingleUseOnly", "Single Use Only");
-
+	archive.doc("Is this switch only able to be used once.");
+	archive(m_queueSignal, "SwitchVerb", "Switch Verb (Override)");
+	archive.doc("Send an alternative queue signal to DRS if the string is not empty. ('interaction_switch').");
+	archive(m_switchOnVerb, "SwitchOnVerb", "Switch On Verb (Override)");
+	archive.doc("Send this verb to DRS instead of the default ('interaction_switch_on').");
+	archive(m_switchOffVerb, "SwitchOffVerb", "Switch Off Verb (Override)");
+	archive.doc("Send this verb to DRS instead of the default ('interaction_switch_off').");
 
 	if (archive.isInput())
 	{
@@ -95,7 +103,8 @@ void CSwitchComponent::SwitchOn()
 	{
 		gEnv->pLog->LogAlways("SwitchOn fired.");
 		m_isSwitchedOn = true;
-		InformAllLinkedEntities("interaction_switch_on", true);
+		const string verb = m_switchOnVerb.IsEmpty() ? kSwitchOnVerb : m_switchOnVerb;
+		InformAllLinkedEntities(verb, true);
 	}
 
 	// Disable after a single use.
@@ -110,7 +119,8 @@ void CSwitchComponent::SwitchOff()
 	{
 		gEnv->pLog->LogAlways("SwitchOff fired.");
 		m_isSwitchedOn = false;
-		InformAllLinkedEntities("interaction_switch_off", false);
+		const string verb = m_switchOffVerb.IsEmpty() ? kSwitchOffVerb : m_switchOffVerb;
+		InformAllLinkedEntities(verb, true);
 	}
 
 	// Disable after a single use.
@@ -138,7 +148,8 @@ void CSwitchComponent::InformAllLinkedEntities(string verb, bool isSwitchedOn)
 		pContextVariableCollection->CreateVariable("IsSwitchedOn", isSwitchedOn);
 
 		// Queue it and let the DRS handle it now.
-		pDrsProxy->GetResponseActor()->QueueSignal("interaction_switch", pContextVariableCollection);
+		const string queueSignalVerb = m_queueSignal.IsEmpty() ? kQueueSignal : m_queueSignal;
+		pDrsProxy->GetResponseActor()->QueueSignal(queueSignalVerb, pContextVariableCollection);
 
 		// Next please.
 		entityLinks = entityLinks->next;
