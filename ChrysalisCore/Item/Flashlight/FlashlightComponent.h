@@ -36,8 +36,6 @@ public:
 
 	// IEntityComponent
 	void Initialize() override;
-	void ProcessEvent(SEntityEvent& event) override;
-	uint64 GetEventMask() const override { return BIT64(ENTITY_EVENT_START_LEVEL) | BIT64(ENTITY_EVENT_RESET) | BIT64(ENTITY_EVENT_EDITOR_PROPERTY_CHANGED) | BIT64(ENTITY_EVENT_XFORM_FINISHED_EDITOR); }
 	struct IEntityPropertyGroup* GetPropertyGroup() override { return this; }
 	// ~IEntityComponent
 
@@ -65,24 +63,24 @@ public:
 	// *** IInteractionInteract
 	// ***
 
-	void Interact() override { gEnv->pLog->LogAlways("Interation Interact fired."); };
+	void Interact() override { gEnv->pLog->LogAlways("Flashlight Interact fired."); };
 
 	// ***
 	// *** IInteractionSwitch
 	// ***
 
-	void SwitchToggle() override { gEnv->pLog->LogAlways("Interation Toggle fired."); ToggleSwitch(); };
-	void SwitchOn() override { gEnv->pLog->LogAlways("Interation SwitchOn fired."); ToggleSwitch(); };
-	void SwitchOff() override { gEnv->pLog->LogAlways("Interation SwitchOff fired."); ToggleSwitch(); };
+	void SwitchToggle() override { gEnv->pLog->LogAlways("Flashlight Toggle fired."); ToggleSwitch(); };
+	void SwitchOn() override { gEnv->pLog->LogAlways("Flashlight SwitchOn fired."); Switch(true); };
+	void SwitchOff() override { gEnv->pLog->LogAlways("Flashlight SwitchOff fired."); Switch(false); };
 
 
 	// ***
 	// *** IInteractionPickupAndDrop
 	// ***
 
-	void Pickup() override { gEnv->pLog->LogAlways("Interation Pickup fired."); };
-	void Drop() override { gEnv->pLog->LogAlways("Interation Drop fired."); };
-	void Inspect() override { gEnv->pLog->LogAlways("Interation Inspect fired."); };
+	void Pickup() override { gEnv->pLog->LogAlways("Flashlight Pickup fired."); };
+	void Drop() override { gEnv->pLog->LogAlways("Flashlight Drop fired."); };
+	void Inspect() override { gEnv->pLog->LogAlways("Flashlight Inspect fired."); };
 
 
 	// ***
