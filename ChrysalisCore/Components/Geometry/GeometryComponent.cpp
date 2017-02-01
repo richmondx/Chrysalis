@@ -25,12 +25,14 @@ YASLI_ENUM_END()
 
 CRYREGISTER_CLASS(CGeometryComponent);
 
+
 void CGeometryComponent::Initialize()
 {
 	GetEntity()->SetFlags(GetEntity()->GetFlags() | ENTITY_FLAG_CASTSHADOW);
 
 	CDesignerEntityComponent::Initialize();
 }
+
 
 void CGeometryComponent::ProcessEvent(SEntityEvent& event)
 {
@@ -77,16 +79,6 @@ void CGeometryComponent::SerializeProperties(Serialization::IArchive& archive)
 	archive(m_bReceiveCollisionEvents, "ReceiveCollisionEvents", "ReceiveCollisionEvents");
 	archive(m_mass, "Mass", "Mass");
 
-	if (archive.openBlock("Animations", "Animations"))
-	{
-		archive(Serialization::AnimationPath(m_animation), "Animation", "Animation");
-//		archive(m_animation, "Animation", "Animation");
-		archive(m_animationSpeed, "Speed", "Speed");
-		archive(m_bLoopAnimation, "Loop", "Loop");
-
-		archive.closeBlock();
-	}
-
 	if (archive.isInput())
 	{
 		OnResetState();
@@ -106,7 +98,7 @@ void CGeometryComponent::OnResetState()
 	if (m_model.size() > 0)
 	{
 		// Load the model.
-		m_slot = LoadMesh(m_model, m_slot);
+		m_slotId = LoadMesh(m_model, m_slotId);
 
 		// Physicalise it if needed.
 		SEntityPhysicalizeParams physicalizationParams;
@@ -125,22 +117,6 @@ void CGeometryComponent::OnResetState()
 
 		physicalizationParams.mass = m_mass;
 		GetEntity()->Physicalize(physicalizationParams);
-
-		// If they requested animation, give them simple animation playback.
-		if (m_animation.size() > 0)
-		{
-			if (auto* pCharacter = GetEntity()->GetCharacter(m_slot))
-			{
-				CryCharAnimationParams animParams;
-				animParams.m_fPlaybackSpeed = m_animationSpeed;
-				animParams.m_nFlags = m_bLoopAnimation ? CA_LOOP_ANIMATION : 0;
-				pCharacter->GetISkeletonAnim()->StartAnimation(m_animation, animParams);
-			}
-			else
-			{
-				gEnv->pLog->LogWarning("Animation playback on %s entity failed. No character found.", m_animation.c_str());
-			}
-		}
 	}
 
 	// Notify listeners.

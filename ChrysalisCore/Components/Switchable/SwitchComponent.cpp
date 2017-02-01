@@ -22,7 +22,7 @@ CRYREGISTER_CLASS(CSwitchComponent);
 void CSwitchComponent::Initialize()
 {
 	// Get some geometry.
-	m_pGeometryComponent = GetEntity()->GetOrCreateComponent<CGeometryComponent>();
+	m_pGeometryComponent = GetEntity()->CreateComponent<CGeometryComponent>();
 
 	// We want to supply interaction verbs.
 	auto m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();

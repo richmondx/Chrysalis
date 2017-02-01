@@ -34,9 +34,9 @@ CFlashlightRegistrator g_flashlightRegistrator;
 
 void CFlashlightComponent::Initialize()
 {
-	m_pGeometryComponent = GetEntity()->GetOrCreateComponent<CGeometryComponent>();
+	m_pGeometryComponent = GetEntity()->CreateComponent<CGeometryComponent>();
 	m_pGeometryComponent->AddEventListener(this);
-	m_pDynamicLightComponent = GetEntity()->GetOrCreateComponent<CDynamicLightComponent>();
+	m_pDynamicLightComponent = GetEntity()->CreateComponent<CDynamicLightComponent>();
 	m_pDynamicLightComponent->AddEventListener(this);
 
 	// We want to supply interaction verbs.

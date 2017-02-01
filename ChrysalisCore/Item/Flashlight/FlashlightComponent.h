@@ -44,13 +44,13 @@ public:
 	void SerializeProperties(Serialization::IArchive& archive) override;
 	// ~IEntityPropertyGroup
 
-	// CDynamicLightComponent::IDynamicLightListener
-	void OnGeometryResetState() override;
-	// ~CDynamicLightComponent::IDynamicLightListener
-
 	// CGeometryComponent::IGeometryListener
-	void OnDynamicLightResetState() override;
+	void OnGeometryResetState() override;
 	// ~CGeometryComponent::IGeometryListener
+
+	// CDynamicLightComponent::IDynamicLightListener
+	void OnDynamicLightResetState() override;
+	// ~CDynamicLightComponent::IDynamicLightListener
 
 
 	// ISimpleItem
@@ -121,7 +121,7 @@ public:
 private:
 	const Quat kRightToForward = Quat::CreateRotationXYZ(Ang3(0.0f, 0.0f, DEG2RAD(90.0f)));
 
-	void OnResetState();
+	void OnResetState() override;
 
 	/** Dynamic light. */
 	CDynamicLightComponent* m_pDynamicLightComponent { nullptr };

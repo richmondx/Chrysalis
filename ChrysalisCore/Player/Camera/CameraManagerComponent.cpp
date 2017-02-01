@@ -56,14 +56,14 @@ void CCameraManagerComponent::PostInit(IGameObject * pGameObject)
 
 	// First person camera.
 	m_cameraModes [ECameraMode::eCameraMode_FirstPerson] = static_cast<CFirstPersonCameraComponent*> (GetGameObject()->AcquireExtension("FirstPersonCamera"));
-	//m_cameraModes [ECameraMode::eCameraMode_FirstPerson] = pEntity->GetOrCreateComponent<CFirstPersonCameraComponent>();
+	//m_cameraModes [ECameraMode::eCameraMode_FirstPerson] = pEntity->CreateComponent<CFirstPersonCameraComponent>();
 
 	// Action RPG Camera.
 	m_cameraModes [ECameraMode::eCameraMode_ActionRpg] = static_cast<CActionRPGCameraComponent*> (GetGameObject()->AcquireExtension("ActionRPGCamera"));
-	//m_cameraModes [ECameraMode::eCameraMode_ActionRpg] = pEntity->GetOrCreateComponent<CActionRPGCameraComponent>();
+	//m_cameraModes [ECameraMode::eCameraMode_ActionRpg] = pEntity->CreateComponent<CActionRPGCameraComponent>();
 
 	// #TODO: make a special one for HMD	
-	//m_cameraModes [ECameraMode::eCameraMode_FirstPersonHmd] = pEntity->GetOrCreateComponent<CActionRPGCameraComponent>();
+	//m_cameraModes [ECameraMode::eCameraMode_FirstPersonHmd] = pEntity->CreateComponent<CActionRPGCameraComponent>();
 
 	// Select the initial camera based on their cvar setting for third person.
 	if (GetCVars().m_isThirdPerson)

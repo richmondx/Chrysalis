@@ -221,6 +221,10 @@ source_group("Actor\\Movement\\StateMachine" FILES ${SourceGroup_Actor_Movement_
 #source_group("Boids\\Terran" FILES ${SourceGroup_Boids_Terran})
 
 set (SourceGroup_Components
+	"Components/Animation/ControlledAnimationComponent.cpp"
+	"Components/Animation/ControlledAnimationComponent.h"
+	"Components/Animation/SimpleAnimationComponent.cpp"
+	"Components/Animation/SimpleAnimationComponent.h"
 	"Components/Geometry/GeometryComponent.cpp"
 	"Components/Geometry/GeometryComponent.h"
 	"Components/Lights/DynamicLightComponent.cpp"
@@ -313,8 +317,6 @@ source_group("Entities\\Openable" FILES ${SourceGroup_Entities_Openable})
 #source_group("Entities\\Ownership" FILES ${SourceGroup_Entities_Ownership})
 
 set (SourceGroup_Components_Switchable
-#	"Components/Switchable/ISwitchableComponent.h"
-#	"Components/Switchable/ISwitchComponent.h"
 #	"Components/Switchable/SwitchableComponent.cpp"
 #	"Components/Switchable/SwitchableComponent.h"
 	"Components/Switchable/SwitchComponent.cpp"
