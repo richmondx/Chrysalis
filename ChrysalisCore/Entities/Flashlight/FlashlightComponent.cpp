@@ -176,8 +176,7 @@ void CFlashlightComponent::OnDynamicLightResetState()
 
 void CFlashlightComponent::ToggleSwitch()
 {
-	m_isSwitchedOn = !m_isSwitchedOn;
-	Switch(m_isSwitchedOn);
+	Switch(!m_isSwitchedOn);
 }
 
 

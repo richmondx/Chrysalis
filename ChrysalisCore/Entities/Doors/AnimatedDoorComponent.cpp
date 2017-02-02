@@ -22,8 +22,13 @@ void CAnimatedDoorComponent::Initialize()
 {
 	auto pEntity = GetEntity();
 	
+	// Get some geometry.
 	m_pGeometryComponent = GetEntity()->CreateComponent<CGeometryComponent>();
+
+	// Get a controllable animation component.
 	m_pControlledAnimationComponent = GetEntity()->CreateComponent<CControlledAnimationComponent>();
+
+	// Allow locking.
 	m_lockableExtension = pEntity->CreateComponent<CLockableComponent>();
 
 	// We want to supply interaction verbs.

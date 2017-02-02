@@ -258,18 +258,29 @@ set (SourceGroup_DynamicResponseSystem
 )
 source_group("DynamicResponseSystem" FILES ${SourceGroup_DynamicResponseSystem})
 
-
 set (SourceGroup_Entities
 	"Entities/EntityEffects.h"
 	"Entities/EntityEffects.cpp"
 )
 source_group("Entities" FILES ${SourceGroup_Entities})
 
+set (SourceGroup_Entities_Compass
+	"Entities/Compass/CompassComponent.cpp"
+	"Entities/Compass/CompassComponent.h"
+)
+source_group("Entities\\Compass" FILES ${SourceGroup_Entities_Compass})
+
 set (SourceGroup_Entities_Doors
 	"Entities/Doors/AnimatedDoorComponent.cpp"
 	"Entities/Doors/AnimatedDoorComponent.h"
 )
 source_group("Entities\\Doors" FILES ${SourceGroup_Entities_Doors})
+
+set (SourceGroup_Entities_Flashlight
+	"Entities/Flashlight/FlashlightComponent.cpp"
+	"Entities/Flashlight/FlashlightComponent.h"
+)
+source_group("Entities\\Flashlight" FILES ${SourceGroup_Entities_Flashlight})
 
 #set (SourceGroup_Entities_Environment_Ledge
 #	"Entities/Environment/Ledge/Ledge.h"
@@ -364,8 +375,6 @@ set (SourceGroup_Item_Accessory
 source_group("Item\\Accessory" FILES ${SourceGroup_Item_Accessory})
 
 set (SourceGroup_Item_Flashlight
-	"Item/Flashlight/FlashlightComponent.cpp"
-	"Item/Flashlight/FlashlightComponent.h"
 	"Item/Flashlight/ItemFlashlightParameter.cpp"
 	"Item/Flashlight/ItemFlashlightParameter.h"
 	"Item/Flashlight/ItemFlashlightParameterShared.cpp"
@@ -477,8 +486,10 @@ set (SOURCE
 	${SourceGroup_Components}
 	${SourceGroup_ConsoleCommands}
 	${SourceGroup_DynamicResponseSystem}
-	${SourceGroup_Entities_Doors}
 	${SourceGroup_Entities}
+	${SourceGroup_Entities_Compass}
+	${SourceGroup_Entities_Doors}
+	${SourceGroup_Entities_Flashlight}
 	${SourceGroup_Entities_Interaction}
 #	${SourceGroup_Entity_Ownership}
 #	${SourceGroup_Entities_Environment_Ledge}
