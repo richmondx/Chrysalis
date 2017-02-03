@@ -7,7 +7,7 @@
 #include <Player/Player.h>
 #include <Actor/Character/Character.h>
 #include <Player/Camera/ICameraComponent.h>
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 
 
 CRYREGISTER_CLASS(CEntityAwarenessComponent)

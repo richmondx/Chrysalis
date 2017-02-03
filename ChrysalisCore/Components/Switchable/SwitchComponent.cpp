@@ -80,15 +80,15 @@ void CSwitchComponent::OnResetState()
 }
 
 
-void CSwitchComponent::SwitchToggle()
+void CSwitchComponent::OnInteractionSwitchToggle()
 {
 	if (m_isEnabled)
 	{
 		gEnv->pLog->LogAlways("SwitchToggle fired.");
 		if (m_isSwitchedOn)
-			SwitchOff();
+			OnInteractionSwitchOff();
 		else
-			SwitchOn();
+			OnInteractionSwitchOn();
 	}
 
 	// Disable after a single use.
@@ -97,7 +97,7 @@ void CSwitchComponent::SwitchToggle()
 }
 
 
-void CSwitchComponent::SwitchOn()
+void CSwitchComponent::OnInteractionSwitchOn()
 {
 	if (m_isEnabled)
 	{
@@ -113,7 +113,7 @@ void CSwitchComponent::SwitchOn()
 }
 
 
-void CSwitchComponent::SwitchOff()
+void CSwitchComponent::OnInteractionSwitchOff()
 {
 	if (m_isEnabled)
 	{

@@ -3,7 +3,7 @@
 #include "ActionSwitch.h"
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 #include "Utility/DRS.h"
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 
 
 DRS::IResponseActionInstanceUniquePtr CActionSwitch::Execute(DRS::IResponseInstance* pResponseInstance)

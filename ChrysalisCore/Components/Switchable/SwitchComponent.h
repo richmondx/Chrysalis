@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Helpers/DesignerEntityComponent.h"
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 #include <Components/Geometry/GeometryComponent.h>
 
 
@@ -48,9 +48,9 @@ public:
 	// ~IEntityPropertyGroup
 
 	// IInteractionSwitch
-	virtual void SwitchToggle() override;;
-	virtual void SwitchOn() override;;
-	virtual void SwitchOff() override;;
+	virtual void OnInteractionSwitchToggle() override;;
+	virtual void OnInteractionSwitchOn() override;;
+	virtual void OnInteractionSwitchOff() override;;
 	// ~IInteractionSwitch
 
 	// ISwitchEntityComponent

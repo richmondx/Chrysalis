@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Helpers/DesignerEntityComponent.h"
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 #include <Components/Geometry/GeometryComponent.h>
 #include <Components/Animation/ControlledAnimationComponent.h>
 
 
-class CCompassComponent final : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public IInteractionPickupAndDrop
+class CCompassComponent final : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public IInteractionItem
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CCompassComponent, "CompassComponent", 0x7C1B29DCC22B4F28, 0x9A38858A4566929E)
 	virtual ~CCompassComponent() {}
@@ -27,9 +27,9 @@ public:
 	// ICompassEntityComponent
 
 	// IInteractionPickupAndDrop
-	virtual void Pickup() override;
-	virtual void Drop() override;
-	virtual void Inspect() override;
+	virtual void OnInteractionItemPickup() override;
+	virtual void OnInteractionItemDrop() override;
+	virtual void OnInteractionItemInspect() override;
 	// IInteractionPickupAndDrop
 
 private:

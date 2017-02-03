@@ -2,7 +2,7 @@
 
 #include "FlashlightComponent.h"
 #include <GameXmlParamReader.h>
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 #include <CryAnimation/ICryAnimation.h>
 
 
@@ -52,16 +52,16 @@ void CFlashlightComponent::Initialize()
 		auto switchOffInteractPtr = std::make_shared<CInteractionSwitchOff>(this);
 		m_interactor->AddInteraction(switchOffInteractPtr);
 
-		auto inspectInteractPtr = std::make_shared<CInteractionInspect>(this);
+		auto inspectInteractPtr = std::make_shared<CInteractionItemInspect>(this);
 		m_interactor->AddInteraction(inspectInteractPtr);
 
 		auto interactPtr = std::make_shared<CInteractionInteract>(this);
 		m_interactor->AddInteraction(interactPtr);
 
-		auto pickupInteractPtr = std::make_shared<CInteractionPickup>(this);
+		auto pickupInteractPtr = std::make_shared<CInteractionItemPickup>(this);
 		m_interactor->AddInteraction(pickupInteractPtr);
 
-		auto dropInteractPtr = std::make_shared<CInteractionDrop>(this);
+		auto dropInteractPtr = std::make_shared<CInteractionItemDrop>(this);
 		m_interactor->AddInteraction(dropInteractPtr);
 	}
 

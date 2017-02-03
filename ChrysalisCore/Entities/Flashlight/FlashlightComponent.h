@@ -27,7 +27,7 @@ A flashlight component.
 //class CFlashlightComponent : public CGameObjectExtensionHelper <CFlashlightComponent, CItem>, public IEntityPropertyGroup,
 //	public IInteractionSwitch, public IInteractionPickupAndDrop, public IInteractionInteract
 class CFlashlightComponent : public CDesignerEntityComponent<>, public IEntityPropertyGroup,
-	public IInteractionSwitch, public IInteractionPickupAndDrop, public IInteractionInteract,
+	public IInteractionSwitch, public IInteractionItem, public IInteractionInteract,
 	public CGeometryComponent::IGeometryListener, public CDynamicLightComponent::IDynamicLightListener
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CFlashlightComponent, "FlashlightComponent", 0x7BFC30B2D9F541D4, 0x9A79F422E3B49400)
@@ -63,24 +63,24 @@ public:
 	// *** IInteractionInteract
 	// ***
 
-	void Interact() override { gEnv->pLog->LogAlways("Flashlight Interact fired."); };
+	void OnInteractionInteract() override { gEnv->pLog->LogAlways("OnInteractionInteract fired."); };
 
 	// ***
 	// *** IInteractionSwitch
 	// ***
 
-	void SwitchToggle() override { gEnv->pLog->LogAlways("Flashlight Toggle fired."); ToggleSwitch(); };
-	void SwitchOn() override { gEnv->pLog->LogAlways("Flashlight SwitchOn fired."); Switch(true); };
-	void SwitchOff() override { gEnv->pLog->LogAlways("Flashlight SwitchOff fired."); Switch(false); };
+	void OnInteractionSwitchToggle() override { gEnv->pLog->LogAlways("OnInteractionSwitchToggle fired."); ToggleSwitch(); };
+	void OnInteractionSwitchOn() override { gEnv->pLog->LogAlways("OnInteractionSwitchOn fired."); Switch(true); };
+	void OnInteractionSwitchOff() override { gEnv->pLog->LogAlways("OnInteractionSwitchOff fired."); Switch(false); };
 
 
 	// ***
 	// *** IInteractionPickupAndDrop
 	// ***
 
-	void Pickup() override { gEnv->pLog->LogAlways("Flashlight Pickup fired."); };
-	void Drop() override { gEnv->pLog->LogAlways("Flashlight Drop fired."); };
-	void Inspect() override { gEnv->pLog->LogAlways("Flashlight Inspect fired."); };
+	void OnInteractionItemPickup() override { gEnv->pLog->LogAlways("OnInteractionItemPickup fired."); };
+	void OnInteractionItemDrop() override { gEnv->pLog->LogAlways("OnInteractionItemDrop fired."); };
+	void OnInteractionItemInspect() override { gEnv->pLog->LogAlways("OnInteractionItemInspect fired."); };
 
 
 	// ***

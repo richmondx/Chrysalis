@@ -234,6 +234,37 @@ set (SourceGroup_Components
 )
 source_group("Components" FILES ${SourceGroup_Components})
 
+set (SourceGroup_Components_Interaction
+
+	"Components/Interaction/EntityAwarenessComponent.cpp"
+	"Components/Interaction/EntityAwarenessComponent.h"
+	"Components/Interaction/EntityInteractionComponent.cpp"
+	"Components/Interaction/EntityInteractionComponent.h"
+)
+source_group("Components\\Interaction" FILES ${SourceGroup_Components_Interaction})
+
+set (SourceGroup_Components_Lockable
+	"Components/Lockable/KeyringComponent.cpp"
+	"Components/Lockable/KeyringComponent.h"
+	"Components/Lockable/LockableComponent.cpp"
+	"Components/Lockable/LockableComponent.h"
+)
+source_group("Components\\Lockable" FILES ${SourceGroup_Components_Lockable})
+
+set (SourceGroup_Components_Openable
+	"Components/Openable/ContainerComponent.cpp"
+	"Components/Openable/ContainerComponent.h"
+)
+source_group("Components\\Openable" FILES ${SourceGroup_Components_Openable})
+
+set (SourceGroup_Components_Switchable
+#	"Components/Switchable/SwitchableComponent.cpp"
+#	"Components/Switchable/SwitchableComponent.h"
+	"Components/Switchable/SwitchComponent.cpp"
+	"Components/Switchable/SwitchComponent.h"
+)
+source_group("Components\\Switchable" FILES ${SourceGroup_Components_Switchable})
+
 set (SourceGroup_ConsoleCommands
 	"ConsoleCommands/ConsoleCommands.h"
 	"ConsoleCommands/ConsoleCommands.cpp"
@@ -299,41 +330,15 @@ source_group("Entities\\Flashlight" FILES ${SourceGroup_Entities_Flashlight})
 #source_group("Entities\\Environment\\Water" FILES ${SourceGroup_Entities_Environment_Water})
 
 set (SourceGroup_Entities_Interaction
-	"Entities/Interaction/EntityAwarenessComponent.cpp"
-	"Entities/Interaction/EntityAwarenessComponent.h"
-	"Entities/Interaction/EntityInteractionComponent.cpp"
-	"Entities/Interaction/EntityInteractionComponent.h"
 	"Entities/Interaction/IEntityInteraction.h"
 )
 source_group("Entities\\Interaction" FILES ${SourceGroup_Entities_Interaction})
-
-set (SourceGroup_Entities_Lockable
-	"Entities/Lockable/Keyring/KeyringComponent.cpp"
-	"Entities/Lockable/Keyring/KeyringComponent.h"
-	"Entities/Lockable/LockableComponent.cpp"
-	"Entities/Lockable/LockableComponent.h"
-)
-source_group("Entities\\Lockable" FILES ${SourceGroup_Entities_Lockable})
-
-set (SourceGroup_Entities_Openable
-	"Entities/Openable/Containers/ContainerComponent.cpp"
-	"Entities/Openable/Containers/ContainerComponent.h"
-)
-source_group("Entities\\Openable" FILES ${SourceGroup_Entities_Openable})
 
 #set (SourceGroup_Entities_Ownership
 #	"Entities/Ownership/IEntityOwnership.h"
 #	"Entities/Ownership/IEntityOwnership.cpp"
 #)
 #source_group("Entities\\Ownership" FILES ${SourceGroup_Entities_Ownership})
-
-set (SourceGroup_Components_Switchable
-#	"Components/Switchable/SwitchableComponent.cpp"
-#	"Components/Switchable/SwitchableComponent.h"
-	"Components/Switchable/SwitchComponent.cpp"
-	"Components/Switchable/SwitchComponent.h"
-)
-source_group("Components\\Switchable" FILES ${SourceGroup_Components_Switchable})
 
 #set (SourceGroup_Game_Cache
 #	"Game/Cache/GameCache.cpp"
@@ -476,6 +481,7 @@ set (SOURCE
 	${SourceGroup_Actor_Movement}
 	${SourceGroup_Actor_Movement_StateMachine}
 #	${SourceGroup_Actor_Pet}
+
 #	${SourceGroup_Animation_ProceduralContext}
 #	${SourceGroup_Boids}
 #	${SourceGroup_Boids_Amphibian}
@@ -483,23 +489,28 @@ set (SOURCE
 #	${SourceGroup_Boids_Avian}
 #	${SourceGroup_Boids_Terran}
 	${SourceGroup_Player_Camera}
+	
 	${SourceGroup_Components}
+	${SourceGroup_Components_Interaction}
+	${SourceGroup_Components_Lockable}
+	${SourceGroup_Components_Openable}
+	${SourceGroup_Components_Switchable}
+
 	${SourceGroup_ConsoleCommands}
 	${SourceGroup_DynamicResponseSystem}
+
 	${SourceGroup_Entities}
 	${SourceGroup_Entities_Compass}
 	${SourceGroup_Entities_Doors}
 	${SourceGroup_Entities_Flashlight}
 	${SourceGroup_Entities_Interaction}
-#	${SourceGroup_Entity_Ownership}
+#	${SourceGroup_Entities_Ownership}
 #	${SourceGroup_Entities_Environment_Ledge}
 #	${SourceGroup_Entities_Environment_Water}
+
 #	${SourceGroup_Game_Cache}
 #	${SourceGroup_Game_Physics}
 #	${SourceGroup_Game_Registration}
-	${SourceGroup_Entities_Lockable}
-	${SourceGroup_Entities_Openable}
-	${SourceGroup_Components_Switchable}
 	${SourceGroup_Helpers}
 	${SourceGroup_Item}
 	${SourceGroup_Item_Accessory}

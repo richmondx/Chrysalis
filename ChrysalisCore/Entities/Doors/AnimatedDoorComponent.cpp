@@ -1,8 +1,11 @@
 #include <StdAfx.h>
 
 #include "AnimatedDoorComponent.h"
-#include <Entities/Lockable/LockableComponent.h>
 #include <CrySerialization/Decorators/Resources.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
+#include <Components/Geometry/GeometryComponent.h>
+#include <Components/Lockable/LockableComponent.h>
+#include <Components/Animation/ControlledAnimationComponent.h>
 
 
 CRYREGISTER_CLASS(CAnimatedDoorComponent)
@@ -23,20 +26,22 @@ void CAnimatedDoorComponent::Initialize()
 	auto pEntity = GetEntity();
 	
 	// Get some geometry.
-	m_pGeometryComponent = GetEntity()->CreateComponent<CGeometryComponent>();
+	m_pGeometryComponent = pEntity->CreateComponent<CGeometryComponent>();
 
 	// Get a controllable animation component.
-	m_pControlledAnimationComponent = GetEntity()->CreateComponent<CControlledAnimationComponent>();
+	m_pControlledAnimationComponent = pEntity->CreateComponent<CControlledAnimationComponent>();
 
 	// Allow locking.
-	m_lockableExtension = pEntity->CreateComponent<CLockableComponent>();
+	m_lockableComponent = pEntity->CreateComponent<CLockableComponent>();
 
 	// We want to supply interaction verbs.
 	auto m_interactor = pEntity->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
-		m_interactor->AddInteraction(std::make_shared<CInteractionOpen>(this));
-		m_interactor->AddInteraction(std::make_shared<CInteractionClose>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionOpenableOpen>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionOpenableClose>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionLockableLock>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionLockableUnlock>(this));
 	}
 
 	OnResetState();

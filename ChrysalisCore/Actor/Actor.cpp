@@ -11,8 +11,8 @@
 #include <Actor/ActorPhysics.h>
 #include <Player/Player.h>
 #include <Player/Animations/PlayerAnimations.h>
-#include <Entities/Interaction/EntityAwarenessComponent.h>
-#include <Entities/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/EntityAwarenessComponent.h>
+#include <Components/Interaction/EntityInteractionComponent.h>
 #include <Utility/CryWatch.h>
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 

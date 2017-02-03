@@ -30,9 +30,9 @@ void CCompassComponent::Initialize()
 	auto m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
-		m_interactor->AddInteraction(std::make_shared<CInteractionInspect>(this));
-		m_interactor->AddInteraction(std::make_shared<CInteractionPickup>(this));
-		m_interactor->AddInteraction(std::make_shared<CInteractionDrop>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionItemInspect>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionItemPickup>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionItemDrop>(this));
 	}
 
 	CDesignerEntityComponent::Initialize();
@@ -53,19 +53,19 @@ void CCompassComponent::OnResetState()
 }
 
 
-void CCompassComponent::Pickup()
+void CCompassComponent::OnInteractionItemPickup()
 {
-	gEnv->pLog->LogAlways("Pickup fired.");
+	gEnv->pLog->LogAlways("OnInteractionItemPickup fired.");
 }
 
 
-void CCompassComponent::Drop()
+void CCompassComponent::OnInteractionItemDrop()
 {
-	gEnv->pLog->LogAlways("Drop fired.");
+	gEnv->pLog->LogAlways("OnInteractionItemDrop fired.");
 }
 
 
-void CCompassComponent::Inspect()
+void CCompassComponent::OnInteractionItemInspect()
 {
-	gEnv->pLog->LogAlways("Inspect fired.");
+	gEnv->pLog->LogAlways("OnInteractionItemInspect fired.");
 }
