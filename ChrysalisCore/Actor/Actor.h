@@ -365,7 +365,7 @@ public:
 
 protected:
 
-	string m_geometry { "objects/default/primitive_box.cgf" };
+	string m_geometry;
 	float m_mass { 82.0f };
 	string m_controllerDefinition { "sdk_tutorial3controllerdefs.xml" };
 	string m_scopeContext { "MainCharacter" };

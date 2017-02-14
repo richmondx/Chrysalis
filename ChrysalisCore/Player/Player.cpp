@@ -16,7 +16,7 @@ class CPlayerRegistrator : public IEntityRegistrator
 	virtual void Register() override
 	{
 		CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CPlayer>("Player");
-		//RegisterEntityWithDefaultComponent<CPlayer>("Player", "Player", "Light.bmp");
+		//RegisterEntityWithDefaultComponent<CPlayer>("Player", "Player", "character.bmp");
 
 		// This should make the entity class invisible in the editor.
 		auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("Player");

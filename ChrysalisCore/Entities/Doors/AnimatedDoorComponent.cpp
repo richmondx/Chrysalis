@@ -6,6 +6,7 @@
 #include <Components/Geometry/GeometryComponent.h>
 #include <Components/Lockable/LockableComponent.h>
 #include <Components/Animation/ControlledAnimationComponent.h>
+#include <Components/Animation/SimpleAnimationComponent.h>
 
 
 CRYREGISTER_CLASS(CAnimatedDoorComponent)
@@ -14,7 +15,7 @@ class CDoorRegistrator : public IEntityRegistrator
 {
 	void Register() override
 	{
-		RegisterEntityWithDefaultComponent<CAnimatedDoorComponent>("AnimatedDoor", "Doors", "Light.bmp");
+		RegisterEntityWithDefaultComponent<CAnimatedDoorComponent>("AnimatedDoor", "Doors", "door.bmp");
 	}
 };
 
@@ -24,20 +25,22 @@ CDoorRegistrator g_doorRegistrator;
 void CAnimatedDoorComponent::Initialize()
 {
 	auto pEntity = GetEntity();
-	
+
 	// Get some geometry.
 	m_pGeometryComponent = pEntity->CreateComponent<CGeometryComponent>();
 
 	// Get a controllable animation component.
-	m_pControlledAnimationComponent = pEntity->CreateComponent<CControlledAnimationComponent>();
+	//m_pAnimationComponent = pEntity->CreateComponent<CControlledAnimationComponent>();
+	m_pAnimationComponent = pEntity->CreateComponent<CSimpleAnimationComponent>();
 
 	// Allow locking.
-	m_lockableComponent = pEntity->CreateComponent<CLockableComponent>();
+	m_pLockableComponent = pEntity->CreateComponent<CLockableComponent>();
 
 	// We want to supply interaction verbs.
 	auto m_interactor = pEntity->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
+		m_interactor->AddInteraction(std::make_shared<CInteractionInteract>(this));
 		m_interactor->AddInteraction(std::make_shared<CInteractionOpenableOpen>(this));
 		m_interactor->AddInteraction(std::make_shared<CInteractionOpenableClose>(this));
 		m_interactor->AddInteraction(std::make_shared<CInteractionLockableLock>(this));
@@ -45,6 +48,24 @@ void CAnimatedDoorComponent::Initialize()
 	}
 
 	OnResetState();
+}
+
+
+void CAnimatedDoorComponent::OnInteractionInteract()
+{
+	if (m_pLockableComponent)
+	{
+		if (m_pLockableComponent->IsLocked())
+		{
+			// #TODO: Notify player door is locked.
+			gEnv->pLog->LogAlways("Door is locked.");
+		}
+		else
+		{
+			gEnv->pLog->LogAlways("OnInteractionInteract fired.");
+			m_pAnimationComponent->OnPlayAnimation();
+		}
+	}
 }
 
 

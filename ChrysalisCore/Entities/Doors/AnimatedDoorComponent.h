@@ -5,9 +5,10 @@
 
 
 class CGeometryComponent;
-class CControlledAnimationComponent;
 class CLockableComponent;
 class CEntityInteractionComponent;
+class CControlledAnimationComponent;
+class CSimpleAnimationComponent;
 
 
 /**
@@ -16,8 +17,10 @@ An animated door.
 \sa IEntityComponent
 \sa IEntityPropertyGroup
 \sa IInteractionContainer
+\sa IInteractionOpenable
+\sa IInteractionLockable
 **/
-class CAnimatedDoorComponent : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public IInteractionOpenable, public IInteractionLockable
+class CAnimatedDoorComponent : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public IInteractionInteract, public IInteractionOpenable, public IInteractionLockable
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CAnimatedDoorComponent, "AnimatedDoor", 0xD246E11FE7E248F0, 0xB512402908F84496)
 
@@ -26,7 +29,11 @@ public:
 	void Initialize() override;
 	struct IEntityPropertyGroup* GetPropertyGroup() override { return this; }
 	// ~IEntityComponent
-	
+
+	// IInteractionInteract
+	void OnInteractionInteract() override;
+	// ~IInteractionInteract
+
 	// IEntityPropertyGroup
 	const char* GetLabel() const override { return "AnimatedDoor Properties"; };
 	void SerializeProperties(Serialization::IArchive& archive) override;
@@ -54,10 +61,11 @@ private:
 	CGeometryComponent* m_pGeometryComponent { nullptr };
 
 	/** Animation for the geometry. */
-	CControlledAnimationComponent* m_pControlledAnimationComponent { nullptr };
-
+	//CControlledAnimationComponent* m_pAnimationComponent { nullptr };
+	CSimpleAnimationComponent* m_pAnimationComponent { nullptr };
+	
 	/** Doors should be lockable. */
-	CLockableComponent* m_lockableComponent { nullptr };
+	CLockableComponent* m_pLockableComponent { nullptr };
 
 	/** This entity should be interactive. */
 	CEntityInteractionComponent* m_interactor { nullptr };

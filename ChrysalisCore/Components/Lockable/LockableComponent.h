@@ -30,14 +30,11 @@ public:
 	CLockableComponent() {};
 	virtual ~CLockableComponent() {};
 
-	struct SExternalCVars
-	{
-		int m_debug;
-	};
-	const SExternalCVars &GetCVars() const;
+	bool IsLocked() const { return m_isLocked; }
+	void SetLocked(bool val) { m_isLocked = val; }
+
+	void OnResetState() override;
 
 private:
 	bool m_isLocked { true };
-
-	void OnResetState();
 };

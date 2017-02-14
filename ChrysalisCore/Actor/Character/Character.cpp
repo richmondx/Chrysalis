@@ -28,7 +28,7 @@ void CCharacter::Register()
 {
 	// Register the entity class so that instances can be created later on either via Launcher or Editor.
 	CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CCharacter>("Character");
-	//RegisterEntityWithDefaultComponent<CCharacter>("Character", "Actors", "Light.bmp");
+	//RegisterEntityWithDefaultComponent<CCharacter>("Character", "Actors", "character.bmp");
 }
 
 

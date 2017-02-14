@@ -4,8 +4,7 @@
 #include <Components/Geometry/GeometryComponent.h>
 
 
-class CSimpleAnimationComponent final : public CDesignerEntityComponent<>, public IEntityPropertyGroup,
-	public CGeometryComponent::IGeometryListener
+class CSimpleAnimationComponent final : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public CGeometryComponent::IGeometryListener
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CSimpleAnimationComponent, "SimpleAnimationComponent", 0xB947F6CEBBE24DC5, 0x8E15F1E4F82161FB)
 	virtual ~CSimpleAnimationComponent() {}
@@ -13,8 +12,6 @@ class CSimpleAnimationComponent final : public CDesignerEntityComponent<>, publi
 public:
 	// IEntityComponent
 	virtual void Initialize() final;
-	virtual void ProcessEvent(SEntityEvent& event) final;
-	virtual uint64 GetEventMask() const final { return CDesignerEntityComponent::GetEventMask() | BIT64(ENTITY_EVENT_HIDE) | BIT64(ENTITY_EVENT_UNHIDE); }
 	virtual IEntityPropertyGroup* GetPropertyGroup() final { return this; }
 	// ~IEntityComponent
 
@@ -28,7 +25,8 @@ public:
 	// ~CGeometryComponent::IGeometryListener
 
 	// CSimpleAnimationComponent
-	virtual void OnResetState() final;
+	void OnResetState() override;
+	void OnPlayAnimation();
 	// CSimpleAnimationComponent
 
 	struct ISimpleAnimationListener
@@ -73,4 +71,7 @@ private:
 
 	/**	True to loop the animation. **/
 	bool m_bLoopAnimation { true };
+
+	/** Should the animation play when the level starts? **/
+	bool m_bPlayOnLevelStart { true };
 };

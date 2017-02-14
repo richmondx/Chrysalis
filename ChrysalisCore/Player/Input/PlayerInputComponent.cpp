@@ -16,7 +16,7 @@ class CPlayerInputRegistrator : public IEntityRegistrator
 	virtual void Register() override
 	{
 		CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CPlayerInputComponent>("PlayerInput");
-		//RegisterEntityWithDefaultComponent<CPlayerInputComponent>("PlayerInput", "Input", "Light.bmp");
+		//RegisterEntityWithDefaultComponent<CPlayerInputComponent>("PlayerInput", "Input", "character.bmp");
 	}
 };
 

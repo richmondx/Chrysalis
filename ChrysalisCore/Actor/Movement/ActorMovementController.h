@@ -81,7 +81,7 @@ public:
 	void UpdateActorMovementRequest(SActorMovementRequest& movementRequest, float frameTime);
 
 
-	/** Each frame we need to compute the acccptable values based on user input and store these
+	/** Each frame we need to compute the acceptable values based on user input and store these
 	for later retrieval. */
 	void Compute();
 

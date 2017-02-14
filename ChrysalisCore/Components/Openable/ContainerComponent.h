@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Helpers/DesignerEntityComponent.h"
 #include "Entities/Interaction/IEntityInteraction.h"
-#include <Entities/Interaction/IEntityInteraction.h>
 
 class CGeometryComponent;
 class CSimpleAnimationComponent;
@@ -16,15 +16,13 @@ A container extension.
 \sa IInteractionContainer
 \sa IInteractionLockable
 **/
-class CContainerComponent : public IEntityComponent, public IEntityPropertyGroup, public IInteractionOpenable, public IInteractionLockable
+class CContainerComponent : public CDesignerEntityComponent<>, public IEntityPropertyGroup, public IInteractionOpenable, public IInteractionLockable
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CContainerComponent, "Container", 0x6FE7D7D95B364222, 0xB235D9C3207C8956)
 
 public:
 	// IEntityComponent
 	void Initialize() override;
-	void ProcessEvent(SEntityEvent& event) override;
-	uint64 GetEventMask() const { return BIT64(ENTITY_EVENT_START_LEVEL) | BIT64(ENTITY_EVENT_RESET) | BIT64(ENTITY_EVENT_EDITOR_PROPERTY_CHANGED) | BIT64(ENTITY_EVENT_XFORM_FINISHED_EDITOR); }
 	struct IEntityPropertyGroup* GetPropertyGroup() override { return this; }
 	// ~IEntityComponent
 
@@ -53,10 +51,10 @@ public:
 	};
 	const SExternalCVars &GetCVars() const;
 
-private:
 	// Called on entity spawn, or when the state of the entity changes in Editor
-	void OnResetState();
+	void OnResetState() override;
 
+private:
 	/** Model for the geometry. */
 	CGeometryComponent* m_pGeometryComponent { nullptr };
 

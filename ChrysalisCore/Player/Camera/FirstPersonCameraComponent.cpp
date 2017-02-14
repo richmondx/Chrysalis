@@ -14,7 +14,7 @@ class CFirstPersonCameraRegistrator : public IEntityRegistrator, public CFirstPe
 	virtual void Register() override
 	{
 		CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CFirstPersonCameraComponent>("FirstPersonCamera");
-		//RegisterEntityWithDefaultComponent<CFirstPersonCameraComponent>("FirstPersonCamera", "Camera", "Light.bmp");
+		//RegisterEntityWithDefaultComponent<CFirstPersonCameraComponent>("FirstPersonCamera", "Camera", "Camera.bmp");
 		
 		// This should make the entity class invisible in the editor.
 		auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("FirstPersonCamera");

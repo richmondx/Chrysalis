@@ -34,26 +34,12 @@ void CSimpleAnimationComponent::Initialize()
 }
 
 
-void CSimpleAnimationComponent::ProcessEvent(SEntityEvent& event)
-{
-	CDesignerEntityComponent::ProcessEvent(event);
-
-	switch (event.event)
-	{
-		case ENTITY_EVENT_HIDE:
-			break;
-
-		case ENTITY_EVENT_UNHIDE:
-			break;
-	}
-}
-
-
 void CSimpleAnimationComponent::SerializeProperties(Serialization::IArchive& archive)
 {
 	archive(m_animation, "Animation", "Animation");
 	archive(m_animationSpeed, "Speed", "Speed");
 	archive(m_bLoopAnimation, "Loop", "Loop");
+	archive(m_bPlayOnLevelStart, "PlayOnLevelStart", "Play On Level Start");
 
 	if (archive.isInput())
 	{
@@ -65,20 +51,8 @@ void CSimpleAnimationComponent::SerializeProperties(Serialization::IArchive& arc
 void CSimpleAnimationComponent::OnResetState()
 {
 	// If they requested animation, give them simple animation playback.
-	if (m_animation.size() > 0)
-	{
-		if (auto* pCharacter = GetEntity()->GetCharacter(m_slotId))
-		{
-			CryCharAnimationParams animParams;
-			animParams.m_fPlaybackSpeed = m_animationSpeed;
-			animParams.m_nFlags = m_bLoopAnimation ? CA_LOOP_ANIMATION : 0;
-			pCharacter->GetISkeletonAnim()->StartAnimation(m_animation, animParams);
-		}
-		else
-		{
-			gEnv->pLog->LogWarning("Animation playback on %s entity failed. No character found.", m_animation.c_str());
-		}
-	}
+	if (m_bPlayOnLevelStart)
+		OnPlayAnimation();
 
 	// Notify listeners.
 	for (auto& pListener : m_ListenersList)
@@ -93,5 +67,24 @@ void CSimpleAnimationComponent::OnGeometryResetState()
 	if (m_pGeometryComponent)
 	{
 		m_slotId = m_pGeometryComponent->GetSlotId();
+	}
+}
+
+
+void CSimpleAnimationComponent::OnPlayAnimation()
+{
+	// We'll use the default animation if there is none given.
+	const string animation = m_animation.IsEmpty() ? "default" : m_animation;
+
+	if (auto* pCharacter = GetEntity()->GetCharacter(m_slotId))
+	{
+		CryCharAnimationParams animParams;
+		animParams.m_fPlaybackSpeed = m_animationSpeed;
+		animParams.m_nFlags = m_bLoopAnimation ? CA_LOOP_ANIMATION : 0;
+		pCharacter->GetISkeletonAnim()->StartAnimation(animation, animParams);
+	}
+	else
+	{
+		gEnv->pLog->LogWarning("Animation playback on %s entity failed. No character found.", animation.c_str());
 	}
 }

@@ -716,79 +716,85 @@ void CActor::OnResetState()
 		}
 	}
 
-	// Load character
-	pEntity->LoadCharacter(0, m_geometry);
-
-	// Mannequin Initialization
-	IMannequin& mannequin = gEnv->pGameFramework->GetMannequinInterface();
-	IAnimationDatabaseManager& animationDatabaseManager = mannequin.GetAnimationDatabaseManager();
-
-	// Loading the controller definition that we previously created.
-	// This is owned by the animation database manager
-	const SControllerDef* const pControllerDef = animationDatabaseManager.LoadControllerDef(MANNEQUIN_FOLDER + m_controllerDefinition);
-	if (pControllerDef == nullptr)
+	if (!m_geometry.IsEmpty())
 	{
-		CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to load controller definition for MannequinSample.");
-		return;
+		// Load character
+		pEntity->LoadCharacter(0, m_geometry);
+
+		// Mannequin Initialization
+		IMannequin& mannequin = gEnv->pGameFramework->GetMannequinInterface();
+		IAnimationDatabaseManager& animationDatabaseManager = mannequin.GetAnimationDatabaseManager();
+
+		// Loading the controller definition that we previously created.
+		// This is owned by the animation database manager
+		const SControllerDef* const pControllerDef = animationDatabaseManager.LoadControllerDef(MANNEQUIN_FOLDER + m_controllerDefinition);
+		if (pControllerDef == nullptr)
+		{
+			CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to load controller definition for MannequinSample.");
+			return;
+		}
+
+		// Creation of the animation context and action controller. Don't re-order these lines.
+		SAFE_RELEASE(m_pActionController);
+		SAFE_DELETE(m_pAnimationContext);
+		m_pAnimationContext = new SAnimationContext(*pControllerDef);
+		m_pActionController = mannequin.CreateActionController(pEntity, *m_pAnimationContext);
+
+		// Scope Context Setup. In our controller definition we have a scope context that we called MainCharacter. The Scope
+		// Context Setup will associate this entity, the character instance we loaded at the beginning, and the animation
+		// database where we saved our fragments to this scope context.
+		const TagID scopeContextId = m_pAnimationContext->controllerDef.m_scopeContexts.Find(m_scopeContext);
+		if (scopeContextId == TAG_ID_INVALID)
+		{
+			CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to find MainCharacter scope context id for MannequinSample in controller definition.");
+			return;
+		}
+
+		ICharacterInstance* const pCharacterInstance = pEntity->GetCharacter(0);
+		CRY_ASSERT(pCharacterInstance != nullptr);
+
+		// Loading a database
+		const IAnimationDatabase* const pAnimationDatabase = animationDatabaseManager.Load(MANNEQUIN_FOLDER + m_animationDatabase);
+		if (pAnimationDatabase == nullptr)
+		{
+			CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to load animation database for MannequinSample.");
+			return;
+		}
+
+		// Setting Scope contexts can happen at any time, and what entity or character instance we have bound to a particular scope context
+		// can change during the lifetime of an action controller.
+		if (pCharacterInstance)
+		{
+			m_pActionController->SetScopeContext(scopeContextId, *pEntity, pCharacterInstance, pAnimationDatabase);
+
+			// Start the idle fragment.
+			//const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find("Idle");
+			////const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find("Move");
+			////const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find ("MotionMovement");
+			//IActionPtr pAction = new TAction<SAnimationContext>(0, fragmentId);
+			//m_pActionController->Queue(*pAction);
+		}
+
+		// Invalidates this instance's transformation matrix in order to force an update of the area manager and other location sensitive systems.
+		pEntity->InvalidateTM(ENTITY_XFORM_POS);
+
+		// The assumption is I need to physicalise on each change - though this might not be true.
+		// #TODO: check if this has to happen every reset.
+		Physicalize();
+
+		// Reset the HSM for character movement.
+		MovementHSMReset();
+
+		// Select which HSM to use for our character's movement. This relies on it's AI status being
+		// correctly set first.
+		SelectMovementHierarchy();
+
+		//SetLastTimeInLedge (0.0f);
+		//SetupAimIKProperties ();
+		//DisableStumbling ();
+		//m_playerStateSwim_WaterTestProxy.Reset (true);
+		//GetSpectacularKill ().Reset ();
 	}
-
-	// Creation of the animation context and action controller. Don't re-order these lines.
-	SAFE_RELEASE(m_pActionController);
-	SAFE_DELETE(m_pAnimationContext);
-	m_pAnimationContext = new SAnimationContext(*pControllerDef);
-	m_pActionController = mannequin.CreateActionController(pEntity, *m_pAnimationContext);
-
-	// Scope Context Setup. In our controller definition we have a scope context that we called MainCharacter. The Scope
-	// Context Setup will associate this entity, the character instance we loaded at the beginning, and the animation
-	// database where we saved our fragments to this scope context.
-	const TagID scopeContextId = m_pAnimationContext->controllerDef.m_scopeContexts.Find(m_scopeContext);
-	if (scopeContextId == TAG_ID_INVALID)
-	{
-		CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to find MainCharacter scope context id for MannequinSample in controller definition.");
-		return;
-	}
-
-	ICharacterInstance* const pCharacterInstance = pEntity->GetCharacter(0);
-	CRY_ASSERT(pCharacterInstance != nullptr);
-
-	// Loading a database
-	const IAnimationDatabase* const pAnimationDatabase = animationDatabaseManager.Load(MANNEQUIN_FOLDER + m_animationDatabase);
-	if (pAnimationDatabase == nullptr)
-	{
-		CryWarning(VALIDATOR_MODULE_GAME, VALIDATOR_ERROR, "Failed to load animation database for MannequinSample.");
-		return;
-	}
-
-	// Setting Scope contexts can happen at any time, and what entity or character instance we have bound to a particular scope context
-	// can change during the lifetime of an action controller.
-	m_pActionController->SetScopeContext(scopeContextId, *pEntity, pCharacterInstance, pAnimationDatabase);
-
-	// Start the idle fragment.
-	//const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find("Idle");
-	////const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find("Move");
-	////const FragmentID fragmentId = m_pAnimationContext->controllerDef.m_fragmentIDs.Find ("MotionMovement");
-	//IActionPtr pAction = new TAction<SAnimationContext>(0, fragmentId);
-	//m_pActionController->Queue(*pAction);
-
-	// Invalidates this instance's transformation matrix in order to force an update of the area manager and other location sensitive systems.
-	pEntity->InvalidateTM(ENTITY_XFORM_POS);
-
-	// The assumption is I need to physicalise on each change - though this might not be true.
-	// #TODO: check if this has to happen every reset.
-	Physicalize();
-
-	// Reset the HSM for character movement.
-	MovementHSMReset();
-
-	// Select which HSM to use for our character's movement. This relies on it's AI status being
-	// correctly set first.
-	SelectMovementHierarchy();
-
-	//SetLastTimeInLedge (0.0f);
-	//SetupAimIKProperties ();
-	//DisableStumbling ();
-	//m_playerStateSwim_WaterTestProxy.Reset (true);
-	//GetSpectacularKill ().Reset ();
 }
 
 
@@ -907,7 +913,7 @@ void CActor::OnActionInspect(EntityId playerId)
 					pDrsProxy->GetResponseActor()->QueueSignal(verbs [0]);
 
 					// #HACK: Another test - just calling the interaction directly instead.
-					auto pInteraction = pInteractor->GetInteraction(verbs[0])._Get();
+					auto pInteraction = pInteractor->GetInteraction(verbs [0])._Get();
 					pInteraction->OnInteractionStart();
 				}
 			}

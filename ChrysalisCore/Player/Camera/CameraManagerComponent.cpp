@@ -14,7 +14,7 @@ class CCameraManagerRegistrator : public IEntityRegistrator, public CCameraManag
 {
 	virtual void Register() override
 	{
-//		RegisterEntityWithDefaultComponent<CCameraManagerComponent>("CameraManager", "Camera", "Light.bmp");
+//		RegisterEntityWithDefaultComponent<CCameraManagerComponent>("CameraManager", "Camera", "Camera.bmp");
 		CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CCameraManagerComponent>("CameraManager");
 
 		// This should make the entity class invisible in the editor.

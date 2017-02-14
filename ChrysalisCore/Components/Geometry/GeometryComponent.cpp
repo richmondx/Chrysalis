@@ -107,9 +107,11 @@ void CGeometryComponent::OnResetState()
 			case ePhysicalizationType_None:
 				physicalizationParams.type = PE_NONE;
 				break;
+
 			case ePhysicalizationType_Static:
 				physicalizationParams.type = PE_STATIC;
 				break;
+
 			case ePhysicalizationType_Rigid:
 				physicalizationParams.type = PE_RIGID;
 				break;

@@ -30,7 +30,7 @@ class CActionRPGCameraRegistrator : public IEntityRegistrator, public CActionRPG
 	virtual void Register() override
 	{
 		CChrysalisCorePlugin::RegisterEntityWithDefaultComponent<CActionRPGCameraComponent>("ActionRPGCamera");
-		//RegisterEntityWithDefaultComponent<CActionRPGCameraComponent>("ActionRPGCamera", "Camera", "Light.bmp");
+		//RegisterEntityWithDefaultComponent<CActionRPGCameraComponent>("ActionRPGCamera", "Camera", "Camera.bmp");
 
 		// This should make the entity class invisible in the editor.
 		auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("ActionRPGCamera");

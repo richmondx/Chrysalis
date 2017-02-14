@@ -1,7 +1,11 @@
 cmake_minimum_required (VERSION 3.6.0)
 project (Chrysalis VERSION 1.0 LANGUAGES CXX)
 
-configure_file ("${PROJECT_NAME}.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
+if (${CMAKE_GENERATOR} MATCHES "^Visual Studio")
+	ADD_DEFINITIONS("/ZI")
+	configure_file ("${PROJECT_NAME}.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+endif()
 
 find_package (CryCommon REQUIRED)
 find_package (CryAction REQUIRED)
