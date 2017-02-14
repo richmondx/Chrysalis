@@ -26,7 +26,7 @@ public:
 
 	// CSimpleAnimationComponent
 	void OnResetState() override;
-	void OnPlayAnimation();
+	void OnPlayAnimation(string overrideAnimation = "");
 	// CSimpleAnimationComponent
 
 	struct ISimpleAnimationListener

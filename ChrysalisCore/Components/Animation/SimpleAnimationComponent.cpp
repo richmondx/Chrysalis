@@ -71,10 +71,10 @@ void CSimpleAnimationComponent::OnGeometryResetState()
 }
 
 
-void CSimpleAnimationComponent::OnPlayAnimation()
+void CSimpleAnimationComponent::OnPlayAnimation(string overrideAnimation)
 {
 	// We'll use the default animation if there is none given.
-	const string animation = m_animation.IsEmpty() ? "default" : m_animation;
+	const string animation = overrideAnimation.IsEmpty() ? (m_animation.IsEmpty() ? "default" : m_animation) : overrideAnimation;
 
 	if (auto* pCharacter = GetEntity()->GetCharacter(m_slotId))
 	{

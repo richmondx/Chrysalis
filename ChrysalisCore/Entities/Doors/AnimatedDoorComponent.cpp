@@ -62,8 +62,21 @@ void CAnimatedDoorComponent::OnInteractionInteract()
 		}
 		else
 		{
-			gEnv->pLog->LogAlways("OnInteractionInteract fired.");
-			m_pAnimationComponent->OnPlayAnimation();
+			// #TODO: Add handling for door being open / closed. This should include forcing re-calc of the nav-mesh if needed.
+			if (m_IsOpen)
+			{
+				// Close the door, Hodor.
+				gEnv->pLog->LogAlways("Door was open.");
+				m_IsOpen = false;
+				m_pAnimationComponent->OnPlayAnimation(kDoorAnimationClose);
+			}
+			else
+			{
+				// Open the door.
+				gEnv->pLog->LogAlways("Door was closed.");
+				m_IsOpen = true;
+				m_pAnimationComponent->OnPlayAnimation(kDoorAnimationOpen);
+			}
 		}
 	}
 }
@@ -71,9 +84,14 @@ void CAnimatedDoorComponent::OnInteractionInteract()
 
 void CAnimatedDoorComponent::SerializeProperties(Serialization::IArchive& archive)
 {
+	archive(m_IsOpen, "IsOpen", "Is Open?");
+	archive.doc("Is the door open?");
+
 	if (archive.isInput())
 	{
 		OnResetState();
+
+		// #TODO: We should get the door into it's proper state e.g. open / closed.
 	}
 }
 

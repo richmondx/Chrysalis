@@ -15,7 +15,7 @@ class CFlashlightRegistrator : public IEntityRegistrator
 	{
 		// Register the class as a factory.
 //		gEnv->pGameFramework->RegisterFactory("Flashlight", static_cast<CFlashlightComponent*> (nullptr), false, static_cast<CFlashlightComponent*> (nullptr));
-		RegisterEntityWithDefaultComponent<CFlashlightComponent>("FlashlightComponent", "Items", "physicsobject.bmp", true);
+		RegisterEntityWithDefaultComponent<CFlashlightComponent>("FlashlightComponent", "Items", "Item.bmp", true);
 
 		// This should make the entity class invisible in the editor.
 		//auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("CFlashlight");

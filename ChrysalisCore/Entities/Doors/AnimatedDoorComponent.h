@@ -54,6 +54,9 @@ public:
 	virtual ~CAnimatedDoorComponent() {}
 
 private:
+	const string kDoorAnimationOpen { "default" };
+	const string kDoorAnimationClose { "down" };
+
 	// Called on entity spawn, or when the state of the entity changes in Editor
 	void OnResetState() override;
 
@@ -69,4 +72,7 @@ private:
 
 	/** This entity should be interactive. */
 	CEntityInteractionComponent* m_interactor { nullptr };
+
+	/** Is the door open? */
+	bool m_IsOpen { false };
 };
