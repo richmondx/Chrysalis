@@ -3,6 +3,7 @@
 #include "FlashlightComponent.h"
 #include <GameXmlParamReader.h>
 #include <Components/Interaction/EntityInteractionComponent.h>
+#include <Components/Interaction/ItemInteractionComponent.h>
 #include <CryAnimation/ICryAnimation.h>
 
 
@@ -14,11 +15,12 @@ class CFlashlightRegistrator : public IEntityRegistrator
 	virtual void Register() override
 	{
 		// Register the class as a factory.
-//		gEnv->pGameFramework->RegisterFactory("Flashlight", static_cast<CFlashlightComponent*> (nullptr), false, static_cast<CFlashlightComponent*> (nullptr));
+		// #NOTE: ILH - keeping this next line to remind me how to register factories.
+		// gEnv->pGameFramework->RegisterFactory("Flashlight", static_cast<CFlashlightComponent*> (nullptr), false, static_cast<CFlashlightComponent*> (nullptr));
 		RegisterEntityWithDefaultComponent<CFlashlightComponent>("FlashlightComponent", "Items", "Item.bmp", true);
 
 		// This should make the entity class invisible in the editor.
-		//auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("CFlashlight");
+		//auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("FlashlightComponent");
 		//cls->SetFlags(cls->GetFlags() | ECLF_INVISIBLE);
 	}
 };
@@ -39,30 +41,17 @@ void CFlashlightComponent::Initialize()
 	m_pDynamicLightComponent = GetEntity()->CreateComponent<CDynamicLightComponent>();
 	m_pDynamicLightComponent->AddEventListener(this);
 
+	// Standard item interactions.
+	m_pItemInteractionComponent = GetEntity()->CreateComponent<CItemInteractionComponent>();
+
 	// We want to supply interaction verbs.
 	m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
-		auto switchToggleInteractPtr = std::make_shared<CInteractionSwitchToggle>(this);
-		m_interactor->AddInteraction(switchToggleInteractPtr);
-
-		auto switchOnInteractPtr = std::make_shared<CInteractionSwitchOn>(this);
-		m_interactor->AddInteraction(switchOnInteractPtr);
-
-		auto switchOffInteractPtr = std::make_shared<CInteractionSwitchOff>(this);
-		m_interactor->AddInteraction(switchOffInteractPtr);
-
-		auto inspectInteractPtr = std::make_shared<CInteractionItemInspect>(this);
-		m_interactor->AddInteraction(inspectInteractPtr);
-
-		auto interactPtr = std::make_shared<CInteractionInteract>(this);
-		m_interactor->AddInteraction(interactPtr);
-
-		auto pickupInteractPtr = std::make_shared<CInteractionItemPickup>(this);
-		m_interactor->AddInteraction(pickupInteractPtr);
-
-		auto dropInteractPtr = std::make_shared<CInteractionItemDrop>(this);
-		m_interactor->AddInteraction(dropInteractPtr);
+		m_interactor->AddInteraction(std::make_shared<CInteractionSwitchToggle>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionSwitchOn>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionSwitchOff>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionInteract>(this));
 	}
 
 	// Reset the entity.
@@ -85,15 +74,6 @@ void CFlashlightComponent::SerializeProperties(Serialization::IArchive& archive)
 // ***
 // *** CFlashlightComponent
 // ***
-
-
-CFlashlightComponent::CFlashlightComponent()
-{}
-
-
-CFlashlightComponent::~CFlashlightComponent()
-{
-}
 
 
 void CFlashlightComponent::OnResetState()

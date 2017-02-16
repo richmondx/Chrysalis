@@ -63,6 +63,7 @@ void CAnimatedDoorComponent::OnInteractionInteract()
 		else
 		{
 			// #TODO: Add handling for door being open / closed. This should include forcing re-calc of the nav-mesh if needed.
+			// Consider forcing the geom to have an 'Open' anim instead of just a 'default' one, since we are overriding it anyway.
 			if (m_IsOpen)
 			{
 				// Close the door, Hodor.

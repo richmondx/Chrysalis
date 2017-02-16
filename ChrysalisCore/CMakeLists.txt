@@ -244,6 +244,8 @@ set (SourceGroup_Components_Interaction
 	"Components/Interaction/EntityAwarenessComponent.h"
 	"Components/Interaction/EntityInteractionComponent.cpp"
 	"Components/Interaction/EntityInteractionComponent.h"
+	"Components/Interaction/ItemInteractionComponent.cpp"
+	"Components/Interaction/ItemInteractionComponent.h"
 )
 source_group("Components\\Interaction" FILES ${SourceGroup_Components_Interaction})
 

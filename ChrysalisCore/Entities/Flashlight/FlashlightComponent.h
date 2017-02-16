@@ -13,6 +13,8 @@
 
 
 class CEntityInteractionComponent;
+class CItemInteractionComponent;
+
 
 /**
 A flashlight component.
@@ -22,12 +24,11 @@ A flashlight component.
 \sa IInteractionSwitch
 \sa IInteractionPickupAndDrop
 \sa IInteractionInteract
+\sa CGeometryComponent::IGeometryListener
+\sa CDynamicLightComponent::IDynamicLightListener
 **/
-//class CFlashlightComponent : public CItem, public IEntityPropertyGroup, public IInteractionSwitch, public IInteractionPickupAndDrop, public IInteractionInteract
-//class CFlashlightComponent : public CGameObjectExtensionHelper <CFlashlightComponent, CItem>, public IEntityPropertyGroup,
-//	public IInteractionSwitch, public IInteractionPickupAndDrop, public IInteractionInteract
 class CFlashlightComponent : public CDesignerEntityComponent<>, public IEntityPropertyGroup,
-	public IInteractionSwitch, public IInteractionItem, public IInteractionInteract,
+	public IInteractionSwitch, public IInteractionInteract,
 	public CGeometryComponent::IGeometryListener, public CDynamicLightComponent::IDynamicLightListener
 {
 	CRY_ENTITY_COMPONENT_INTERFACE_AND_CLASS(CFlashlightComponent, "FlashlightComponent", 0x7BFC30B2D9F541D4, 0x9A79F422E3B49400)
@@ -52,52 +53,27 @@ public:
 	void OnDynamicLightResetState() override;
 	// ~CDynamicLightComponent::IDynamicLightListener
 
-
 	// ISimpleItem
 	//bool Init(IGameObject * pGameObject) override;
 	//void PostInit(IGameObject * pGameObject) override;
 	// ~ISimpleItem
 
-
-	// ***
-	// *** IInteractionInteract
-	// ***
-
+	// IInteractionInteract
 	void OnInteractionInteract() override { gEnv->pLog->LogAlways("OnInteractionInteract fired."); };
+	// ~IInteractionInteract
 
-	// ***
-	// *** IInteractionSwitch
-	// ***
-
+	// IInteractionSwitch
 	void OnInteractionSwitchToggle() override { gEnv->pLog->LogAlways("OnInteractionSwitchToggle fired."); ToggleSwitch(); };
 	void OnInteractionSwitchOn() override { gEnv->pLog->LogAlways("OnInteractionSwitchOn fired."); Switch(true); };
 	void OnInteractionSwitchOff() override { gEnv->pLog->LogAlways("OnInteractionSwitchOff fired."); Switch(false); };
-
-
-	// ***
-	// *** IInteractionPickupAndDrop
-	// ***
-
-	void OnInteractionItemPickup() override { gEnv->pLog->LogAlways("OnInteractionItemPickup fired."); };
-	void OnInteractionItemDrop() override { gEnv->pLog->LogAlways("OnInteractionItemDrop fired."); };
-	void OnInteractionItemInspect() override { gEnv->pLog->LogAlways("OnInteractionItemInspect fired."); };
-
+	// ~IInteractionSwitch
 
 	// ***
 	// *** CFlashlightComponent
 	// ***
 
-	/**
-	This instance's default constructor.
-	*/
-	CFlashlightComponent();
-
-
-	/**
-	This instance's default destructor.
-	*/
-	~CFlashlightComponent();
-
+	CFlashlightComponent() {};
+	virtual ~CFlashlightComponent() {};
 
 	//void GetSharedParameters(XmlNodeRef rootParams);
 	//void LoadFromXML();
@@ -132,13 +108,17 @@ private:
 	/** Instanced flashlight parameters. */
 	CItemFlashlightParameter m_itemFlashlightParameter;
 
+	/**  Provide ability to offer interactions. */
+	CEntityInteractionComponent* m_interactor { nullptr };
+
+	/** Standard interactions for an item. */
+	CItemInteractionComponent* m_pItemInteractionComponent { nullptr };
+
 	/** true if this object is switched on. */
 	bool m_isSwitchedOn { true };
 
 	/** The battery level - range 0.0f - 1.0f. */
 	float m_batteryLevel { 1.0f };
-
-	CEntityInteractionComponent* m_interactor { nullptr };
 
 	/** A local postion offset within the slot for the light. **/
 	Vec3 m_lightLocalPosition { ZERO };

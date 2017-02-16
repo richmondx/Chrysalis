@@ -26,11 +26,12 @@ public:
 	virtual void OnResetState() final;
 	// ICompassEntityComponent
 
-	// IInteractionPickupAndDrop
-	virtual void OnInteractionItemPickup() override;
-	virtual void OnInteractionItemDrop() override;
-	virtual void OnInteractionItemInspect() override;
-	// IInteractionPickupAndDrop
+	// IInteractionItem
+	void OnInteractionItemInspect() override { gEnv->pLog->LogAlways("OnInteractionItemInspect fired."); };
+	void OnInteractionItemPickup() override { gEnv->pLog->LogAlways("OnInteractionItemPickup fired."); };
+	void OnInteractionItemDrop() override { gEnv->pLog->LogAlways("OnInteractionItemDrop fired."); };
+	void OnInteractionItemToss() override { gEnv->pLog->LogAlways("OnInteractionItemToss fired."); };
+	// IInteractionItem
 
 private:
 	/** Model for the geometry. */

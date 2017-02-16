@@ -9,13 +9,13 @@ struct IInteraction
 	virtual void OnInteractionComplete() {};
 	virtual void OnInteractionCancel() {};
 
-	bool IsUseable() { return true; };
+	bool IsUseable() const { return true; };
 	virtual const string GetVerb() const { return "interaction_interact"; };
 	virtual const string GetVerbUI() const { return "@" + GetVerb(); };
 
-	bool IsEnabled() { return m_isEnabled; };
+	bool IsEnabled() const { return m_isEnabled; };
 	void SetEnabled(bool isEnabled) { m_isEnabled = isEnabled; };
-	bool IsHidden() { return m_isHidden; };
+	bool IsHidden() const { return m_isHidden; };
 	void SetHidden(bool isHidden) { m_isHidden = isHidden; };
 
 private:
@@ -111,10 +111,25 @@ DECLARE_SHARED_POINTERS(CInteractionSwitchOff);
 
 struct IInteractionItem
 {
+	virtual void OnInteractionItemInspect() = 0;
 	virtual void OnInteractionItemPickup() = 0;
 	virtual void OnInteractionItemDrop() = 0;
-	virtual void OnInteractionItemInspect() = 0;
+	virtual void OnInteractionItemToss() = 0;
 };
+
+
+class CInteractionItemInspect : public IInteraction
+{
+public:
+	CInteractionItemInspect(IInteractionItem* subject) { m_subject = subject; };
+
+	const string GetVerb() const override { return "interaction_inspect"; };
+	void OnInteractionStart() override { m_subject->OnInteractionItemInspect(); };
+
+private:
+	IInteractionItem* m_subject { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionItemInspect);
 
 
 class CInteractionItemPickup : public IInteraction
@@ -145,18 +160,18 @@ private:
 DECLARE_SHARED_POINTERS(CInteractionItemDrop);
 
 
-class CInteractionItemInspect : public IInteraction
+class CInteractionItemToss : public IInteraction
 {
 public:
-	CInteractionItemInspect(IInteractionItem* subject) { m_subject = subject; };
+	CInteractionItemToss(IInteractionItem* subject) { m_subject = subject; };
 
-	const string GetVerb() const override { return "interaction_inspect"; };
-	void OnInteractionStart() override { m_subject->OnInteractionItemInspect(); };
+	const string GetVerb() const override { return "interaction_toss"; };
+	void OnInteractionStart() override { m_subject->OnInteractionItemToss(); };
 
 private:
 	IInteractionItem* m_subject { nullptr };
 };
-DECLARE_SHARED_POINTERS(CInteractionItemInspect);
+DECLARE_SHARED_POINTERS(CInteractionItemToss);
 
 
 // ***

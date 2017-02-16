@@ -51,21 +51,3 @@ void CCompassComponent::SerializeProperties(Serialization::IArchive& archive)
 void CCompassComponent::OnResetState()
 {
 }
-
-
-void CCompassComponent::OnInteractionItemPickup()
-{
-	gEnv->pLog->LogAlways("OnInteractionItemPickup fired.");
-}
-
-
-void CCompassComponent::OnInteractionItemDrop()
-{
-	gEnv->pLog->LogAlways("OnInteractionItemDrop fired.");
-}
-
-
-void CCompassComponent::OnInteractionItemInspect()
-{
-	gEnv->pLog->LogAlways("OnInteractionItemInspect fired.");
-}
