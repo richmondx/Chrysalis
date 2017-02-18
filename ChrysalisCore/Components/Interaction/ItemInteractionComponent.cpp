@@ -3,6 +3,7 @@
 #include "ItemInteractionComponent.h"
 #include <Components/Interaction/EntityInteractionComponent.h>
 #include <Player/Player.h>
+#include <Player/Input/IPlayerInputComponent.h>
 #include <Actor/Character/Character.h>
 
 
@@ -75,30 +76,89 @@ void CItemInteractionComponent::SerializeProperties(Serialization::IArchive& arc
 
 void CItemInteractionComponent::OnInteractionItemInspect()
 {
+	// We're already inspecting it, drop it instead.
+	if (m_inspectionState == InspectionState::eInspecting)
+	{
+		OnInteractionItemDrop();
+		return;
+	}
+
 	gEnv->pLog->LogAlways("OnInteractionItemInspect fired.");
+	m_inspectionState = InspectionState::eInspecting;
+
 	if (auto pCharacter = CPlayer::GetLocalCharacter())
 	{
-		// Hack to see the entity move.
-		GetEntity()->SetPos(pCharacter->GetEntity()->GetPos() + Vec3(0.0f, 0.0f, 1.5f));
+		m_initialPosition = GetEntity()->GetPos();
+		m_targetPosition = pCharacter->GetEntity()->GetPos() + pCharacter->GetLocalLeftHandPos();
+		m_timeInAir = 0.0f;
+		m_timeInAirRequired = (m_targetPosition - m_initialPosition).GetLength() / kJumpToPlayerSpeed;
+
+		// #TODO: Use a helper method instead of setting directly.
+		if (auto pPlayer = CPlayer::GetLocalPlayer())
+		{
+			pPlayer->SetCharacterInteractionMode(true);
+		}
 	}
 }
 
 
 void CItemInteractionComponent::OnInteractionItemPickup()
 {
+	// We're already inspecting it, drop it instead.
+	if (m_inspectionState == InspectionState::ePickingUp)
+	{
+		OnInteractionItemDrop();
+		return;
+	}
+
 	gEnv->pLog->LogAlways("OnInteractionItemPickup fired.");
+	m_inspectionState = InspectionState::ePickingUp;
+
+	if (auto pCharacter = CPlayer::GetLocalCharacter())
+	{
+		m_initialPosition = GetEntity()->GetPos();
+		m_targetPosition = pCharacter->GetEntity()->GetPos() + pCharacter->GetLocalRightHandPos();
+		m_timeInAir = 0.0f;
+		m_timeInAirRequired = (m_targetPosition - m_initialPosition).GetLength() / kJumpToPlayerSpeed;
+
+		// #TODO: Use a helper method instead of setting directly.
+		if (auto pPlayer = CPlayer::GetLocalPlayer())
+		{
+			pPlayer->SetCharacterInteractionMode(true);
+		}
+	}
 }
 
 
 void CItemInteractionComponent::OnInteractionItemDrop()
 {
 	gEnv->pLog->LogAlways("OnInteractionItemDrop fired.");
+	m_inspectionState = InspectionState::eDroping;
+
+	if (auto pCharacter = CPlayer::GetLocalCharacter())
+	{
+	}
+
+	if (auto pPlayer = CPlayer::GetLocalPlayer())
+	{
+		pPlayer->SetCharacterInteractionMode(false);
+	}
 }
 
 
 void CItemInteractionComponent::OnInteractionItemToss()
 {
 	gEnv->pLog->LogAlways("OnInteractionItemToss fired.");
+	m_inspectionState = InspectionState::eTossing;
+
+	if (auto pCharacter = CPlayer::GetLocalCharacter())
+	{
+	}
+
+	if (auto pPlayer = CPlayer::GetLocalPlayer())
+	{
+		pPlayer->SetCharacterInteractionMode(false);
+	}
 }
 
 
@@ -114,4 +174,77 @@ void CItemInteractionComponent::OnResetState()
 
 void CItemInteractionComponent::Update()
 {
+	const float frameTime = gEnv->pTimer->GetFrameTime();
+
+	switch (m_inspectionState)
+	{
+		case InspectionState::eInspecting:
+			OnInspectingUpdate(frameTime);
+			break;
+
+		case InspectionState::ePickingUp:
+			OnPickingUpUpdate(frameTime);
+			break;
+
+		//case InspectionState::eDroping:
+		//	// #TODO: Start physics simulating again.
+		//	break;
+
+		//case InspectionState::eTossing:
+		//	// #TODO: Start physics simulating again.
+		//	break;
+
+		//case InspectionState::eCancelled:
+		//	// #TODO: Start physics simulating again.
+		//	break;
+
+		//case InspectionState::eNone:
+		//	// #TODO: Start physics simulating again.
+		//	break;
+	}
+}
+
+
+void CItemInteractionComponent::OnInspectingUpdate(const float frameTime)
+{
+	const auto pEntity = GetEntity();
+
+	// For now, just pull the object to a target location.
+	m_timeInAir = min(m_timeInAirRequired, m_timeInAir + frameTime);
+
+	if (auto pCharacter = CPlayer::GetLocalCharacter())
+	{
+		Vec3 delta = (m_targetPosition - m_initialPosition) * (1.0f - (m_timeInAir / m_timeInAirRequired));
+		pEntity->SetPos(m_targetPosition - delta);
+
+		// Allow them to rotate the item in their hands.
+		if (auto pPlayerInput = CPlayer::GetLocalPlayer()->GetPlayerInput())
+		{
+			// #TODO: The rotation depends on our point of view.
+			const auto rotation = Quat(Ang3(pPlayerInput->GetYawDelta() * kInspectionRotationFactor, 0.0f, pPlayerInput->GetPitchDelta() * kInspectionRotationFactor));
+			pEntity->SetRotation(pEntity->GetRotation() * rotation);
+		}
+	}
+}
+
+
+void CItemInteractionComponent::OnPickingUpUpdate(const float frameTime)
+{
+	const auto pEntity = GetEntity();
+
+	// For now, just pull the object to a target location.
+	m_timeInAir = min(m_timeInAirRequired, m_timeInAir + frameTime);
+
+	if (auto pCharacter = CPlayer::GetLocalCharacter())
+	{
+		Vec3 delta = (m_targetPosition - m_initialPosition) * (1.0f - (m_timeInAir / m_timeInAirRequired));
+		pEntity->SetPos(m_targetPosition - delta);
+	}
+
+	// Allow them to rotate the item in their hands.
+	if (auto pPlayerInput = CPlayer::GetLocalPlayer()->GetPlayerInput())
+	{
+		const auto rotation = Quat(Ang3(pPlayerInput->GetHeadPitchDelta(), 0.0f, pPlayerInput->GetYawDelta()));
+		pEntity->SetRotation(pEntity->GetRotation() * rotation);
+	}
 }

@@ -106,7 +106,6 @@ public:
 	**/
 	Vec3 GetLocalEyePos() const override;
 
-
 	EntityId GetCurrentItemId(bool includeVehicle) const;
 
 	/**
@@ -673,4 +672,14 @@ public:
 	\param	playerId	The entityId for the player who invoked this action.
 	*/
 	void OnActionInteractionEnd(EntityId playerId);
+
+
+	// ***
+	// *** Misc
+	// ***
+
+public:
+	virtual Vec3 GetLocalLeftHandPos() const;
+
+	virtual Vec3 GetLocalRightHandPos() const;
 };

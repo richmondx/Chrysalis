@@ -91,7 +91,7 @@ bool CActorMovementController::GetStanceState(const SStanceStateQuery& query, SS
 		state.fireDirection = FORWARD_DIRECTION;
 		state.entityDirection = FORWARD_DIRECTION;
 
-		// #TODO: Need to make sure we calc weapon position too, once weapons are in place.
+		// #TODO: Need to make sure we calculate weapon position too, once weapons are in place.
 		//state.weaponPosition = pos + m_pPlayer->GetWeaponOffsetWithLean(query.stance, query.lean, query.peekOver, m_pPlayer->GetEyeOffset());
 	}
 	else
@@ -111,7 +111,7 @@ bool CActorMovementController::GetStanceState(const SStanceStateQuery& query, SS
 		Matrix33 aimRot;
 		aimRot.SetRotationVDir(constrainedAimDir);
 
-		// #TODO: Need to make sure we calc weapon position too, once weapons are in place.
+		// #TODO: Need to make sure we calculate weapon position too, once weapons are in place.
 		//state.weaponPosition = pos + aimRot.TransformVector(m_pPlayer->GetWeaponOffsetWithLean(query.stance, query.lean, query.peekOver, m_pPlayer->GetEyeOffset()));
 
 		state.upDirection = orientation.GetColumn2();
@@ -169,7 +169,7 @@ void CActorMovementController::UpdateActorMovementRequest(SActorMovementRequest&
 	// Desired movement.
 	if (m_movementRequest.HasDeltaMovement())
 	{
-		// NOTE: desiredVelocity is normalized to the maximumspeed for the specified stance, so DeltaMovement should be
+		// NOTE: desiredVelocity is normalized to the maximum speed for the specified stance, so DeltaMovement should be
 		// between 0 and 1! 
 		movementRequest.desiredVelocity += m_movementRequest.GetDeltaMovement();
 	}
@@ -251,15 +251,21 @@ void CActorMovementController::ComputeMovementRequest()
 			// Handle turning differently, based on whether they are moving.
 			if (unitMovement.GetLengthFast() > FLT_EPSILON)
 			{
-				// Add the movement.
-				request.AddDeltaMovement(movement);
+				if (pPlayer->GetAllowCharacterMovement())
+				{
+					// Add the movement.
+					request.AddDeltaMovement(movement);
+				}
 
+				if (pPlayer->GetAllowCharacterRotation())
+				{
 					// Find out the relative direction the body should naturally be facing when moving in the given direction.
-				auto bodyRotation = GetLowerBodyRotation(pPlayerInput->GetMovementStateFlags());
+					auto bodyRotation = GetLowerBodyRotation(pPlayerInput->GetMovementStateFlags());
 
-				// Because they are moving, we want to turn their character to face the direction they are moving.
-				float zDelta = movementDirection.GetRotZ() - m_pActor->GetEntity()->GetWorldAngles().z + bodyRotation;
-				request.AddDeltaRotation(Ang3(0.0f, 0.0f, zDelta));
+					// Because they are moving, we want to turn their character to face the direction they are moving.
+					float zDelta = movementDirection.GetRotZ() - m_pActor->GetEntity()->GetWorldAngles().z + bodyRotation;
+					request.AddDeltaRotation(Ang3(0.0f, 0.0f, zDelta));
+				}
 			}
 			//else
 			//{
@@ -271,10 +277,16 @@ void CActorMovementController::ComputeMovementRequest()
 		else
 		{
 			// Add the movement.
-			request.AddDeltaMovement(movement);
+			if (pPlayer->GetAllowCharacterMovement())
+			{
+				request.AddDeltaMovement(movement);
+			}
 
 			// Rotate the actor based on player input.
-			request.AddDeltaRotation(Ang3(0.0f, 0.0f, pPlayerInput->GetMouseYawDelta () - pPlayerInput->GetXiYawDelta()));
+			if (pPlayer->GetAllowCharacterRotation())
+			{
+				request.AddDeltaRotation(Ang3(0.0f, 0.0f, pPlayerInput->GetMouseYawDelta() - pPlayerInput->GetXiYawDelta()));
+			}
 
 			// #TODO: I also need to tilt the FP view camera up and down - and have this change the actor look / aim pose.
 			// camera isn't connected to a bone at present due to not having a suitable one that doesn't scan around in

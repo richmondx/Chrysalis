@@ -418,6 +418,64 @@ Vec3 CActor::GetLocalEyePos() const
 }
 
 
+Vec3 CActor::GetLocalLeftHandPos() const
+{
+	// The default, in case we can't find the actual hand position.
+	const Vec3 handPosition { -0.2f, 0.3f, 1.3f };
+
+	// Get their character or bail early.
+	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
+	if (pCharacter)
+	{
+		// Determine the position of the left and right eyes, using their average for eyePosition.
+		const IAttachmentManager* pAttachmentManager = pCharacter->GetIAttachmentManager();
+		if (pAttachmentManager)
+		{
+			// Did the animators define a hand bone for us to use?
+			// #TODO: This is from SDK guys. Change this to a well defined name for our skeleton attachments.
+			const auto handBone = pAttachmentManager->GetIndexByName("left_weapon");
+			const IAttachment* pAttachment = pAttachmentManager->GetInterfaceByIndex(handBone);
+			if (pAttachment)
+			{
+				// We have an exact position to return.
+				return GetEntity()->GetRotation() * pAttachment->GetAttModelRelative().t;
+			}
+		}
+	}
+
+	return handPosition;
+}
+
+
+Vec3 CActor::GetLocalRightHandPos() const
+{
+	// The default, in case we can't find the actual hand position.
+	const Vec3 handPosition { 0.2f, 0.3f, 1.3f };
+
+	// Get their character or bail early.
+	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
+	if (pCharacter)
+	{
+		// Determine the position of the left and right eyes, using their average for eyePosition.
+		const IAttachmentManager* pAttachmentManager = pCharacter->GetIAttachmentManager();
+		if (pAttachmentManager)
+		{
+			// Did the animators define a hand bone for us to use?
+			// #TODO: This is from SDK guys. Change this to a well defined name for our skeleton attachments.
+			const auto handBone = pAttachmentManager->GetIndexByName("weapon");
+			const IAttachment* pAttachment = pAttachmentManager->GetInterfaceByIndex(handBone);
+			if (pAttachment)
+			{
+				// We have an exact position to return.
+				return GetEntity()->GetRotation() * pAttachment->GetAttModelRelative().t;
+			}
+		}
+	}
+
+	return handPosition;
+}
+
+
 IMovementController* CActor::GetMovementController() const
 {
 	return m_pMovementController;
