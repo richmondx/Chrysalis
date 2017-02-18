@@ -137,6 +137,20 @@ void CItemInteractionComponent::OnInteractionItemDrop()
 
 	if (auto pCharacter = CPlayer::GetLocalCharacter())
 	{
+		auto pEntity = GetEntity();
+
+		pe_action_awake action;
+		action.bAwake = true;
+
+		IEntity* pEntityImpulse = pEntity;
+		while (pEntityImpulse->GetParent())
+		{
+			pEntityImpulse = pEntityImpulse->GetParent();
+		}
+
+		IPhysicalEntity* pPhysEntity = pEntityImpulse->GetPhysics();
+		if (pPhysEntity)
+			pPhysEntity->Action(&action);
 	}
 
 	if (auto pPlayer = CPlayer::GetLocalPlayer())
@@ -153,6 +167,24 @@ void CItemInteractionComponent::OnInteractionItemToss()
 
 	if (auto pCharacter = CPlayer::GetLocalCharacter())
 	{
+		auto pEntity = GetEntity();
+		Vec3 impulse = pCharacter->GetEntity()->GetRotation() * FORWARD_DIRECTION * kTossFactor;
+
+		// Apply initial impulse
+		pe_action_impulse action;
+		action.impulse = impulse;
+		action.point = pCharacter->GetLocalRightHandPos();
+
+		// the impulse has to be applied to the highest entity in the hierarchy. This comes from how physics manage linked entities.
+		IEntity* pEntityImpulse = pEntity;
+		while (pEntityImpulse->GetParent())
+		{
+			pEntityImpulse = pEntityImpulse->GetParent();
+		}
+
+		IPhysicalEntity* pPhysEntity = pEntityImpulse->GetPhysics();
+		if (pPhysEntity)
+			pPhysEntity->Action(&action);
 	}
 
 	if (auto pPlayer = CPlayer::GetLocalPlayer())
