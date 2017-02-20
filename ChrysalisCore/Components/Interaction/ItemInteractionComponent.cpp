@@ -88,7 +88,9 @@ void CItemInteractionComponent::OnInteractionItemInspect()
 
 	if (auto pCharacter = CPlayer::GetLocalCharacter())
 	{
-		m_initialPosition = GetEntity()->GetPos();
+		auto pEntity = GetEntity();
+		m_initialPosition = pEntity->GetPos();
+		m_initialRotation = pEntity->GetRotation();
 		m_targetPosition = pCharacter->GetEntity()->GetPos() + pCharacter->GetLocalLeftHandPos();
 		m_timeInAir = 0.0f;
 		m_timeInAirRequired = (m_targetPosition - m_initialPosition).GetLength() / kJumpToPlayerSpeed;
@@ -142,6 +144,7 @@ void CItemInteractionComponent::OnInteractionItemDrop()
 		pe_action_awake action;
 		action.bAwake = true;
 
+		// #TODO: it seems unlikely this is needed on every physics case. Remove it and ensure it works.
 		IEntity* pEntityImpulse = pEntity;
 		while (pEntityImpulse->GetParent())
 		{
@@ -176,6 +179,8 @@ void CItemInteractionComponent::OnInteractionItemToss()
 		action.point = pCharacter->GetLocalRightHandPos();
 
 		// the impulse has to be applied to the highest entity in the hierarchy. This comes from how physics manage linked entities.
+		// #TODO: it seems unlikely this is needed on every physics case. Remove it and ensure it works.
+		// #TODO: This might be better as pe_action_set_velocity - since a velocity isn't dependent on the mass of the object.
 		IEntity* pEntityImpulse = pEntity;
 		while (pEntityImpulse->GetParent())
 		{
@@ -252,9 +257,11 @@ void CItemInteractionComponent::OnInspectingUpdate(const float frameTime)
 		// Allow them to rotate the item in their hands.
 		if (auto pPlayerInput = CPlayer::GetLocalPlayer()->GetPlayerInput())
 		{
-			// #TODO: The rotation depends on our point of view.
-			const auto rotation = Quat(Ang3(pPlayerInput->GetYawDelta() * kInspectionRotationFactor, 0.0f, pPlayerInput->GetPitchDelta() * kInspectionRotationFactor));
-			pEntity->SetRotation(pEntity->GetRotation() * rotation);
+			// #TODO: The rotation flips the controls when the item is upside down. That feels weird. Is there a way to remove this
+			// from the rotation?
+			const auto inputRotation = Quat(Ang3(pPlayerInput->GetPitchDelta() * kInspectionRotationFactor, pPlayerInput->GetYawDelta() * kInspectionRotationFactor, 0.0f));
+			const auto characterRotation = Quat(Ang3(0.0f, 0.0f, pCharacter->GetEntity()->GetRotation().GetFwdZ())).GetNormalized();
+			pEntity->SetRotation(pEntity->GetRotation() * inputRotation * characterRotation);
 		}
 	}
 }

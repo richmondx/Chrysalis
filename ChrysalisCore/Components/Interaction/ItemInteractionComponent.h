@@ -71,6 +71,7 @@ private:
 	float m_timeInAir;
 	Vec3 m_initialPosition;
 	Vec3 m_targetPosition;
+	Quat m_initialRotation;
 
 	void OnResetState() override;
 	void Update();
