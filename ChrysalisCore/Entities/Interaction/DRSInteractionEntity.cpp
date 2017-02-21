@@ -23,8 +23,8 @@ CRYREGISTER_CLASS(CDRSInteractionEntity);
 
 void CDRSInteractionEntity::Initialize()
 {
-	GetEntity()->CreateComponent<CGeometryComponent>();
 	GetEntity()->CreateComponent<CDRSInteractionComponent>();
+	GetEntity()->CreateComponent<CGeometryComponent>();
 
 	// Reset the entity.
 	OnResetState();

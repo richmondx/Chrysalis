@@ -61,6 +61,17 @@ void CDRSInteractionComponent::SerializeProperties(Serialization::IArchive& arch
 	archive(m_propertyCount, "PropertyCount", "Number of Properties");
 	archive.doc("The number of DRS properties this component should provide space for.");
 
+	if (archive.isEdit())
+	{
+		if (archive.openBlock("properties", "Child Properties"))
+		{
+			// You can serialise a map / vector directly.
+		}
+	}
+	else
+	{
+	}
+
 	if (archive.isInput())
 	{
 		OnResetState();

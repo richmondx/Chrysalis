@@ -36,7 +36,12 @@ private:
 	/** An instance of an interaction component. */
 	CEntityInteractionComponent* m_interactor { nullptr };
 
+	/** The main verb for the DRS response. */
 	string m_drsResponse;
 
+	/** Track how many properties we need. */
 	int m_propertyCount { 4 };
+
+	/** Track how many properties we need. */
+	int m_lastPropertyCount { m_propertyCount };
 };
