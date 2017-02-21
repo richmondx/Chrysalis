@@ -33,8 +33,6 @@ void CDRSInteractionEntity::Initialize()
 
 void CDRSInteractionEntity::SerializeProperties(Serialization::IArchive& archive)
 {
-//	archive(m_propertyCount, "PropertyCount", "Number of Properties");
-
 	if (archive.isInput())
 	{
 		OnResetState();

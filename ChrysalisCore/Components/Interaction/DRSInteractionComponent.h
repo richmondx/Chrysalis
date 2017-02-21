@@ -2,6 +2,8 @@
 
 #include "Helpers/DesignerEntityComponent.h"
 #include "Entities/Interaction/IEntityInteraction.h"
+#include <CrySerialization/Decorators/Resources.h>
+
 
 class CEntityInteractionComponent;
 
@@ -13,6 +15,19 @@ class CDRSInteractionComponent final : public CDesignerEntityComponent<>, public
 	virtual ~CDRSInteractionComponent() {}
 
 public:
+	struct SDRSProperties
+	{
+		string key;
+		string value;
+
+		virtual void Serialize(Serialization::IArchive& ar)
+		{
+			ar(key, "DRSKey", "DRS Key");
+			ar(value, "DRSValue", "DRS Value");
+		}
+	};
+
+
 	// IEntityComponent
 	void Initialize() override;
 	void ProcessEvent(SEntityEvent& event) override;
@@ -39,9 +54,6 @@ private:
 	/** The main verb for the DRS response. */
 	string m_drsResponse;
 
-	/** Track how many properties we need. */
-	int m_propertyCount { 4 };
-
-	/** Track how many properties we need. */
-	int m_lastPropertyCount { m_propertyCount };
+	/** Properties. */
+	std::vector<SDRSProperties> m_drsProperties;	
 };

@@ -58,19 +58,8 @@ void CDRSInteractionComponent::SerializeProperties(Serialization::IArchive& arch
 {
 	archive(m_drsResponse, "DRSResponse", "DRS Response (verb)");
 	archive.doc("Verb to pass into DRS e.g. interaction_play_audio.");
-	archive(m_propertyCount, "PropertyCount", "Number of Properties");
-	archive.doc("The number of DRS properties this component should provide space for.");
 
-	if (archive.isEdit())
-	{
-		if (archive.openBlock("properties", "Child Properties"))
-		{
-			// You can serialise a map / vector directly.
-		}
-	}
-	else
-	{
-	}
+	archive(m_drsProperties, "DRSProperties", "DRS Properties");
 
 	if (archive.isInput())
 	{
@@ -106,12 +95,11 @@ void CDRSInteractionComponent::OnInteractionDRS()
 		// It might be useful to know which verb triggered the interaction.
 		pContextVariableCollection->CreateVariable("Verb", CHashedString(m_drsResponse));
 
-		// Bad example of adding more variables to the collection.
-		//pContextVariableCollection->CreateVariable("CharacterId", static_cast<int>(GetEntityId()));
-
-		// #HACK: For testing!
-		// #TODO: We need a solidly thought out way to populate the variable collections using our entities.
-		pContextVariableCollection->CreateVariable("MuffinMan", CHashedString("dooropen"));
+		// Add each key, value to the DRS variable collection.
+		for each (auto it in m_drsProperties)
+		{
+			pContextVariableCollection->CreateVariable(CHashedString(it.key), CHashedString(it.value));			
+		}
 
 		// Queue it and let the DRS handle it now.
 		pDrsProxy->GetResponseActor()->QueueSignal(m_drsResponse, pContextVariableCollection);
