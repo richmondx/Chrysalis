@@ -589,15 +589,15 @@ public:
 
 	\param	playerId	The entityId for the player who invoked this action.
 	*/
-	void OnActionItemUse(EntityId playerId);
+	virtual void OnActionItemUse(EntityId playerId);
 
 
 	/**
-	Action handler for picking up an item / entitiy.
+	Action handler for picking up an item / entity.
 
 	\param	playerId	The entityId for the player who invoked this action.
 	*/
-	void OnActionItemPickup(EntityId playerId);
+	virtual void OnActionItemPickup(EntityId playerId);
 
 
 	/**
@@ -605,7 +605,7 @@ public:
 
 	\param	playerId	The entityId for the player who invoked this action.
 	*/
-	void OnActionItemDrop(EntityId playerId);
+	virtual void OnActionItemDrop(EntityId playerId);
 
 
 	/**
@@ -614,7 +614,7 @@ public:
 
 	\param	playerId	The entityId for the player who invoked this action.
 	*/
-	void OnActionItemThrow(EntityId playerId);
+	virtual void OnActionItemToss(EntityId playerId);
 
 
 	/**
@@ -673,6 +673,10 @@ public:
 	*/
 	void OnActionInteractionEnd(EntityId playerId);
 
+
+private:
+	/** If we are interacting with an entity, it is this entity. */
+	EntityId m_interactionEntityId { INVALID_ENTITYID };
 
 	// ***
 	// *** Misc

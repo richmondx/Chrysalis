@@ -745,7 +745,7 @@ void CActor::OnPlayerDetach()
 
 	// #TODO: Detach the camera.
 
-	// #TODO: We can remove the entity awareness component if that's desireable.
+	// #TODO: We can remove the entity awareness component if that's desirable.
 
 	// #TODO: handle transitioning this character back into the loving hands of the AI.
 	m_isAIControlled = true;
@@ -894,13 +894,43 @@ void CActor::OnActionItemPickup(EntityId playerId)
 
 void CActor::OnActionItemDrop(EntityId playerId)
 {
-	CryLogAlways("Player dropped an item");
+	if (m_interactionEntityId != INVALID_ENTITYID)
+	{
+		CryLogAlways("Player dropped an item");
+
+		auto pTargetEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
+
+		if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
+		{
+			if (auto pInteraction = pInteractor->GetInteraction("interaction_drop")._Get())
+			{
+				pInteraction->OnInteractionStart();
+			}
+		}
+	}
+	// We no longer have an entity to drop.
+	m_interactionEntityId = INVALID_ENTITYID;
 }
 
 
-void CActor::OnActionItemThrow(EntityId playerId)
+void CActor::OnActionItemToss(EntityId playerId)
 {
-	CryLogAlways("Player threw an item");
+	if (m_interactionEntityId != INVALID_ENTITYID)
+	{
+		CryLogAlways("Player tossed an item");
+		auto pTargetEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
+
+		if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
+		{
+			if (auto pInteraction = pInteractor->GetInteraction("interaction_toss")._Get())
+			{
+				pInteraction->OnInteractionStart();
+			}
+		}
+	}
+
+	// We no longer have an entity to drop.
+	m_interactionEntityId = INVALID_ENTITYID;
 }
 
 
@@ -919,21 +949,23 @@ void CActor::OnActionBarUse(EntityId playerId, int actionBarId)
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() >= actionBarId)
 				{
-					auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
+					//auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
 
-					// Create a context variable collection and populate it based on information from the target entity.
-					DRS::IVariableCollectionSharedPtr pContextVariableCollection = gEnv->pDynamicResponseSystem->CreateContextCollection();
+					//// Create a context variable collection and populate it based on information from the target entity.
+					//DRS::IVariableCollectionSharedPtr pContextVariableCollection = gEnv->pDynamicResponseSystem->CreateContextCollection();
+					//auto verb = verbs [actionBarId - 1];
+					//auto pInteraction = pInteractor->GetInteraction(verb)._Get();
+
+					//// It might be useful to know which verb triggered the interaction.
+					//pContextVariableCollection->CreateVariable("Verb", CHashedString(verb));
+					//pContextVariableCollection->CreateVariable("CharacterId", static_cast<int>(GetEntityId()));
+
+					//// Queue it and let the DRS handle it now.
+					//pDrsProxy->GetResponseActor()->QueueSignal(verb, pContextVariableCollection);
+
 					auto verb = verbs [actionBarId - 1];
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 
-					// It might be useful to know which verb triggered the interaction.
-					pContextVariableCollection->CreateVariable("Verb", CHashedString(verb));
-					pContextVariableCollection->CreateVariable("CharacterId", static_cast<int>(GetEntityId()));
-
-					// Queue it and let the DRS handle it now.
-					pDrsProxy->GetResponseActor()->QueueSignal(verb, pContextVariableCollection);
-
-					// #HACK: Another test - just calling the interaction directly instead.
 					pInteraction->OnInteractionStart();
 				}
 				else
@@ -959,19 +991,22 @@ void CActor::OnActionInspect(EntityId playerId)
 		auto results = m_pAwareness->GetNearDotFiltered();
 		if (results.size() > 0)
 		{
-			auto pTargetEntity = gEnv->pEntitySystem->GetEntity(results [0]);
+			m_interactionEntityId = results [0];
+			auto pInteractionEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
 
-			if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
+			if (auto pInteractor = pInteractionEntity->GetComponent<CEntityInteractionComponent>())
 			{
 				// There's an interactor component, so this is an interactive entity.
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() > 0)
 				{
-					auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
-					pDrsProxy->GetResponseActor()->QueueSignal(verbs [0]);
+					auto verb = verbs [0];
+
+					auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pInteractionEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
+					pDrsProxy->GetResponseActor()->QueueSignal(verb);
 
 					// #HACK: Another test - just calling the interaction directly instead.
-					auto pInteraction = pInteractor->GetInteraction(verbs [0])._Get();
+					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 					pInteraction->OnInteractionStart();
 				}
 			}
@@ -997,21 +1032,22 @@ void CActor::OnActionInteractionStart(EntityId playerId)
 		auto results = m_pAwareness->GetNearDotFiltered();
 		if (results.size() > 0)
 		{
-			auto pTargetEntity = gEnv->pEntitySystem->GetEntity(results [0]);
+			m_interactionEntityId = results [0];
+			auto pInteractionEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
 
-			if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
+			if (auto pInteractor = pInteractionEntity->GetComponent<CEntityInteractionComponent>())
 			{
 				// There's an interactor component, so this is an interactive entity.
 				// #TODO: We should really only process an 'interact' verb - not simply the first entry.
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() > 0)
 				{
+					auto verb = verbs [0];
+
 					//auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
 
 					//// Create a context variable collection and populate it based on information from the target entity.
 					//DRS::IVariableCollectionSharedPtr pContextVariableCollection = gEnv->pDynamicResponseSystem->CreateContextCollection();
-					auto verb = verbs [0];
-					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 
 					//// It might be useful to know which verb triggered the interaction.
 					//pContextVariableCollection->CreateVariable("Verb", CHashedString(verb));
@@ -1026,6 +1062,7 @@ void CActor::OnActionInteractionStart(EntityId playerId)
 					//pDrsProxy->GetResponseActor()->QueueSignal("PlayAnimation", pContextVariableCollection);
 
 					// #HACK: Another test - just calling the interaction directly instead.
+					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 					pInteraction->OnInteractionStart();
 				}
 			}

@@ -275,7 +275,7 @@ void CPlayerInputComponent::InitializeActionHandler()
 	m_actionHandler.AddHandler(ActionId("item_use"), &CPlayerInputComponent::OnActionItemUse);
 	m_actionHandler.AddHandler(ActionId("item_pickup"), &CPlayerInputComponent::OnActionItemPickup);
 	m_actionHandler.AddHandler(ActionId("item_drop"), &CPlayerInputComponent::OnActionItemDrop);
-	m_actionHandler.AddHandler(ActionId("item_throw"), &CPlayerInputComponent::OnActionItemThrow);
+	m_actionHandler.AddHandler(ActionId("item_toss"), &CPlayerInputComponent::OnActionItemToss);
 
 	// Action bars.
 	m_actionHandler.AddHandler(ActionId("actionbar_01"), &CPlayerInputComponent::OnActionBar01);
@@ -565,13 +565,13 @@ bool CPlayerInputComponent::OnActionItemDrop(EntityId entityId, const ActionId& 
 }
 
 
-bool CPlayerInputComponent::OnActionItemThrow(EntityId entityId, const ActionId& actionId, int activationMode, float value)
+bool CPlayerInputComponent::OnActionItemToss(EntityId entityId, const ActionId& actionId, int activationMode, float value)
 {
 	if (activationMode == eAAM_OnPress)
 	{
 		if (auto pCharacter = CPlayer::GetLocalCharacter())
 		{
-			pCharacter->OnActionItemThrow(entityId);
+			pCharacter->OnActionItemToss(entityId);
 		}
 	}
 

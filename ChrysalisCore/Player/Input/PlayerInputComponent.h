@@ -110,8 +110,7 @@ protected:
 
 
 	/**
-	Action handler for throwing an item. General expectation is this will be used for "Pick and Throw" weapons but it
-	might need to also handle regular weapons and even ordinary items.
+	Action handler for tossing an item. In this case toss means a light dismissive throw in the forward direction.
 
 	\param	entityId	  	The entityId for the player who invoked this action.
 	\param	actionId	  	Identifier for the action that was triggered by the player.
@@ -120,7 +119,7 @@ protected:
 
 	\return	true if it succeeds, false if it fails.
 	*/
-	bool OnActionItemThrow(EntityId entityId, const ActionId& actionId, int activationMode, float value);
+	bool OnActionItemToss(EntityId entityId, const ActionId& actionId, int activationMode, float value);
 
 
 	/**

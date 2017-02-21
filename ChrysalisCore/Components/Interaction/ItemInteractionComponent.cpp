@@ -43,8 +43,8 @@ void CItemInteractionComponent::Initialize()
 	{
 		m_interactor->AddInteraction(std::make_shared<CInteractionItemInspect>(this));
 		m_interactor->AddInteraction(std::make_shared<CInteractionItemPickup>(this));
-		m_interactor->AddInteraction(std::make_shared<CInteractionItemDrop>(this));
-		m_interactor->AddInteraction(std::make_shared<CInteractionItemToss>(this));
+		m_interactor->AddInteraction(std::make_shared<CInteractionItemDrop>(this, true, true));
+		m_interactor->AddInteraction(std::make_shared<CInteractionItemToss>(this, true, true));
 	}
 
 	// Reset the entity.
@@ -144,14 +144,8 @@ void CItemInteractionComponent::OnInteractionItemDrop()
 		pe_action_awake action;
 		action.bAwake = true;
 
-		// #TODO: it seems unlikely this is needed on every physics case. Remove it and ensure it works.
-		IEntity* pEntityImpulse = pEntity;
-		while (pEntityImpulse->GetParent())
-		{
-			pEntityImpulse = pEntityImpulse->GetParent();
-		}
-
-		IPhysicalEntity* pPhysEntity = pEntityImpulse->GetPhysics();
+		// No impulse, we're just letting it drop.
+		IPhysicalEntity* pPhysEntity = pEntity->GetPhysics();
 		if (pPhysEntity)
 			pPhysEntity->Action(&action);
 	}
@@ -173,21 +167,12 @@ void CItemInteractionComponent::OnInteractionItemToss()
 		auto pEntity = GetEntity();
 		Vec3 impulse = pCharacter->GetEntity()->GetRotation() * FORWARD_DIRECTION * kTossFactor;
 
-		// Apply initial impulse
+		// A small impulse to toss it aside.
 		pe_action_impulse action;
 		action.impulse = impulse;
 		action.point = pCharacter->GetLocalRightHandPos();
 
-		// the impulse has to be applied to the highest entity in the hierarchy. This comes from how physics manage linked entities.
-		// #TODO: it seems unlikely this is needed on every physics case. Remove it and ensure it works.
-		// #TODO: This might be better as pe_action_set_velocity - since a velocity isn't dependent on the mass of the object.
-		IEntity* pEntityImpulse = pEntity;
-		while (pEntityImpulse->GetParent())
-		{
-			pEntityImpulse = pEntityImpulse->GetParent();
-		}
-
-		IPhysicalEntity* pPhysEntity = pEntityImpulse->GetPhysics();
+		IPhysicalEntity* pPhysEntity = pEntity->GetPhysics();
 		if (pPhysEntity)
 			pPhysEntity->Action(&action);
 	}
