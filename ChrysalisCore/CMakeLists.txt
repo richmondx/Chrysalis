@@ -240,6 +240,8 @@ source_group("Components" FILES ${SourceGroup_Components})
 
 set (SourceGroup_Components_Interaction
 
+	"Components/Interaction/DRSInteractionComponent.cpp"
+	"Components/Interaction/DRSInteractionComponent.h"
 	"Components/Interaction/EntityAwarenessComponent.cpp"
 	"Components/Interaction/EntityAwarenessComponent.h"
 	"Components/Interaction/EntityInteractionComponent.cpp"
@@ -336,6 +338,8 @@ source_group("Entities\\Flashlight" FILES ${SourceGroup_Entities_Flashlight})
 #source_group("Entities\\Environment\\Water" FILES ${SourceGroup_Entities_Environment_Water})
 
 set (SourceGroup_Entities_Interaction
+	"Entities/Interaction/DRSInteractionEntity.cpp"
+	"Entities/Interaction/DRSInteractionEntity.h"
 	"Entities/Interaction/IEntityInteraction.h"
 )
 source_group("Entities\\Interaction" FILES ${SourceGroup_Entities_Interaction})

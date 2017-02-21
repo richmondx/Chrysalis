@@ -7,7 +7,7 @@
 #include <CrySerialization/Enum.h>
 
 
-class CGeomEntityRegistrator : public IEntityRegistrator
+class CDRSInteractionEntityRegistrator : public IEntityRegistrator
 {
 	virtual void Register() override
 	{
@@ -15,7 +15,7 @@ class CGeomEntityRegistrator : public IEntityRegistrator
 	}
 };
 
-CGeomEntityRegistrator g_geomEntityRegistrator;
+CDRSInteractionEntityRegistrator g_geomEntityRegistrator;
 
 YASLI_ENUM_BEGIN_NESTED(CGeometryComponent, EPhysicalizationType, "PhysicalizationType")
 YASLI_ENUM_VALUE_NESTED(CGeometryComponent, ePhysicalizationType_None, "None")

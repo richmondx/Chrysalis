@@ -949,20 +949,6 @@ void CActor::OnActionBarUse(EntityId playerId, int actionBarId)
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() >= actionBarId)
 				{
-					//auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
-
-					//// Create a context variable collection and populate it based on information from the target entity.
-					//DRS::IVariableCollectionSharedPtr pContextVariableCollection = gEnv->pDynamicResponseSystem->CreateContextCollection();
-					//auto verb = verbs [actionBarId - 1];
-					//auto pInteraction = pInteractor->GetInteraction(verb)._Get();
-
-					//// It might be useful to know which verb triggered the interaction.
-					//pContextVariableCollection->CreateVariable("Verb", CHashedString(verb));
-					//pContextVariableCollection->CreateVariable("CharacterId", static_cast<int>(GetEntityId()));
-
-					//// Queue it and let the DRS handle it now.
-					//pDrsProxy->GetResponseActor()->QueueSignal(verb, pContextVariableCollection);
-
 					auto verb = verbs [actionBarId - 1];
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 
@@ -1043,23 +1029,6 @@ void CActor::OnActionInteractionStart(EntityId playerId)
 				if (verbs.size() > 0)
 				{
 					auto verb = verbs [0];
-
-					//auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pTargetEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
-
-					//// Create a context variable collection and populate it based on information from the target entity.
-					//DRS::IVariableCollectionSharedPtr pContextVariableCollection = gEnv->pDynamicResponseSystem->CreateContextCollection();
-
-					//// It might be useful to know which verb triggered the interaction.
-					//pContextVariableCollection->CreateVariable("Verb", CHashedString(verb));
-					//pContextVariableCollection->CreateVariable("CharacterId", static_cast<int>(GetEntityId()));
-
-					//// Queue it and let the DRS handle it now.
-					//pDrsProxy->GetResponseActor()->QueueSignal(verb, pContextVariableCollection);
-
-					// #HACK: For testing!
-					// #TODO: We need a solidly thought out way to populate the variable collections using our entities.
-					//pContextVariableCollection->CreateVariable("PlayAnimationFile", CHashedString("dooropen"));
-					//pDrsProxy->GetResponseActor()->QueueSignal("PlayAnimation", pContextVariableCollection);
 
 					// #HACK: Another test - just calling the interaction directly instead.
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();

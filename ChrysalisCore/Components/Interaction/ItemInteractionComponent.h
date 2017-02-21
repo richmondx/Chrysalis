@@ -46,6 +46,8 @@ public:
 	virtual ~CItemInteractionComponent() {};
 
 private:
+	/** An instance of an interaction component. */
+	CEntityInteractionComponent* m_interactor { nullptr };
 
 	/** Speed at which object 'jump' towards player when being inspected (m/sec). */
 	const float kJumpToPlayerSpeed = 4.0f;
@@ -79,6 +81,4 @@ private:
 	void OnPickingUpUpdate(const float frameTime);
 
 	void OnInspectingUpdate(const float frameTime);
-
-	CEntityInteractionComponent* m_interactor { nullptr };
 };

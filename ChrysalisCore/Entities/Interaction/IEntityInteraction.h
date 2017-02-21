@@ -56,6 +56,35 @@ DECLARE_SHARED_POINTERS(CInteractionInteract);
 
 
 // ***
+// *** Trigger a DRS operation with variable passed in from the component.
+// ***
+
+struct IInteractionDRS
+{
+	virtual void OnInteractionDRS() = 0;
+};
+
+
+class CInteractionDRS : public IInteraction
+{
+public:
+	CInteractionDRS(IInteractionDRS* subject, bool isEnabled = true, bool isHidden = false)
+	{
+		m_host = subject;
+		m_isEnabled = isEnabled;
+		m_isHidden = isHidden;
+	};
+
+	const string GetVerb() const override { return "interaction_drs"; };
+	void OnInteractionStart() override { m_host->OnInteractionDRS(); };
+
+private:
+	IInteractionDRS* m_host { nullptr };
+};
+DECLARE_SHARED_POINTERS(CInteractionDRS);
+
+
+// ***
 // *** Switches
 // ***
 

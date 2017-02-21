@@ -15,7 +15,7 @@ class CItemInteractionRegistrator : public IEntityRegistrator
 	virtual void Register() override
 	{
 		// Register the class as a factory.
-		RegisterEntityWithDefaultComponent<CItemInteractionComponent>("ItemInteractionComponent", "Items", "Item.bmp", true);
+		RegisterEntityWithDefaultComponent<CItemInteractionComponent>("ItemInteractionComponent", "Interaction", "Item.bmp", true);
 
 		// This should make the entity class invisible in the editor.
 		auto cls = gEnv->pEntitySystem->GetClassRegistry()->FindClass("ItemInteractionComponent");
