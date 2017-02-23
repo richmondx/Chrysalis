@@ -1,11 +1,8 @@
 #include "StdAfx.h"
 
 #include "DRSInteractionEntity.h"
-#include <Components/Interaction/EntityInteractionComponent.h>
 #include <Components/Interaction/DRSInteractionComponent.h>
 #include <Components/Geometry/GeometryComponent.h>
-#include <CrySerialization/Decorators/Resources.h>
-#include <CrySerialization/Enum.h>
 
 
 class DRSInteractionEntityRegistrator : public IEntityRegistrator

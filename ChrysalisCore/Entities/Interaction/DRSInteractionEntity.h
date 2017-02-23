@@ -23,6 +23,4 @@ public:
 	// IDRSInteractionEntityComponent
 	virtual void OnResetState() final;
 	// IDRSInteractionEntityComponent
-	
-private:
 };

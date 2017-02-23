@@ -2,7 +2,6 @@
 
 #include "DRSInteractionComponent.h"
 #include <Components/Interaction/EntityInteractionComponent.h>
-#include <CrySerialization/Decorators/Resources.h>
 #include <CrySerialization/Enum.h>
 #include <CryDynamicResponseSystem/IDynamicResponseSystem.h>
 
@@ -75,14 +74,8 @@ void CDRSInteractionComponent::OnResetState()
 
 void CDRSInteractionComponent::OnInteractionDRS()
 {
-	if (m_drsResponse.IsEmpty())
+	if (!m_drsResponse.IsEmpty())
 	{
-		CryLogAlways("Interaction DRS has no verb.");
-	}
-	else
-	{
-		CryLogAlways("Interaction DRS");
-
 		// Default to self as the target entity.
 		auto pTargetEntity = GetEntity();
 
