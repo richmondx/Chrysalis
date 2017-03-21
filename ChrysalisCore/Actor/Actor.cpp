@@ -187,14 +187,14 @@ void CActor::ProcessEvent(SEntityEvent& event)
 	switch (event.event)
 	{
 		// Physicalize on level start for Launcher
-		case ENTITY_EVENT_START_LEVEL:
+	case ENTITY_EVENT_START_LEVEL:
 
-			// Editor specific, physicalize on reset, property change or transform change
-		case ENTITY_EVENT_RESET:
-		case ENTITY_EVENT_EDITOR_PROPERTY_CHANGED:
-		case ENTITY_EVENT_XFORM_FINISHED_EDITOR:
-			OnResetState();
-			break;
+		// Editor specific, physicalize on reset, property change or transform change
+	case ENTITY_EVENT_RESET:
+	case ENTITY_EVENT_EDITOR_PROPERTY_CHANGED:
+	case ENTITY_EVENT_XFORM_FINISHED_EDITOR:
+		OnResetState();
+		break;
 	}
 }
 
@@ -203,8 +203,8 @@ IEntityComponent::ComponentEventPriority CActor::GetEventPriority(const int even
 {
 	switch (eventID)
 	{
-		case ENTITY_EVENT_PREPHYSICSUPDATE:
-			return ENTITY_PROXY_LAST - ENTITY_PROXY_USER + EEntityEventPriority_Actor + EEntityEventPriority_Client; // #HACK: only used for when we are the client, fix later.
+	case ENTITY_EVENT_PREPHYSICSUPDATE:
+		return ENTITY_PROXY_LAST - ENTITY_PROXY_USER + EEntityEventPriority_Actor + EEntityEventPriority_Client; // #HACK: only used for when we are the client, fix later.
 	}
 
 	return IGameObjectExtension::GetEventPriority(eventID);
@@ -342,7 +342,7 @@ void CActor::UpdateAnimationState(const SActorMovementRequest& movementRequest)
 Vec3 CActor::GetLocalEyePos() const
 {
 	// The default, in case we can't find the actual eye position, will be to use an average male's height.
-	Vec3 eyePosition { 0.0f, 0.0f, 1.82f };
+	Vec3 eyePosition{ 0.0f, 0.0f, 1.82f };
 
 	// Get their character or bail early.
 	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
@@ -384,33 +384,33 @@ Vec3 CActor::GetLocalEyePos() const
 			eyeFlags |= 0x02;
 		}
 
-		static bool alreadyWarned { false };
+		static bool alreadyWarned{ false };
 		switch (eyeFlags)
 		{
-			case 0:
-				// Failure, didn't find any eyes.
-				// This will most likely spam the log. Disable it if it's annoying.
-				if (!alreadyWarned)
-				{
-					CryLogAlways("Character class %s does not have '#camera', 'left_eye' or 'right_eye' defined.", GetActorClassName());
-					alreadyWarned = true;
-				}
-				break;
+		case 0:
+			// Failure, didn't find any eyes.
+			// This will most likely spam the log. Disable it if it's annoying.
+			if (!alreadyWarned)
+			{
+				CryLogAlways("Character class %s does not have '#camera', 'left_eye' or 'right_eye' defined.", GetActorClassName());
+				alreadyWarned = true;
+			}
+			break;
 
-			case 1:
-				// Left eye only.
-				eyePosition = eyeLeftPosition;
-				break;
+		case 1:
+			// Left eye only.
+			eyePosition = eyeLeftPosition;
+			break;
 
-			case 2:
-				// Right eye only.
-				eyePosition = eyeRightPosition;
-				break;
+		case 2:
+			// Right eye only.
+			eyePosition = eyeRightPosition;
+			break;
 
-			case 3:
-				// Both eyes, position between the two points.
-				eyePosition = (eyeLeftPosition + eyeRightPosition) / 2.0f;
-				break;
+		case 3:
+			// Both eyes, position between the two points.
+			eyePosition = (eyeLeftPosition + eyeRightPosition) / 2.0f;
+			break;
 		}
 	}
 
@@ -421,7 +421,7 @@ Vec3 CActor::GetLocalEyePos() const
 Vec3 CActor::GetLocalLeftHandPos() const
 {
 	// The default, in case we can't find the actual hand position.
-	const Vec3 handPosition { -0.2f, 0.3f, 1.3f };
+	const Vec3 handPosition{ -0.2f, 0.3f, 1.3f };
 
 	// Get their character or bail early.
 	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
@@ -450,7 +450,7 @@ Vec3 CActor::GetLocalLeftHandPos() const
 Vec3 CActor::GetLocalRightHandPos() const
 {
 	// The default, in case we can't find the actual hand position.
-	const Vec3 handPosition { 0.2f, 0.3f, 1.3f };
+	const Vec3 handPosition{ 0.2f, 0.3f, 1.3f };
 
 	// Get their character or bail early.
 	ICharacterInstance* pCharacter = GetEntity()->GetCharacter(0);
@@ -941,7 +941,7 @@ void CActor::OnActionBarUse(EntityId playerId, int actionBarId)
 		auto results = m_pAwareness->GetNearDotFiltered();
 		if (results.size() > 0)
 		{
-			auto pTargetEntity = gEnv->pEntitySystem->GetEntity(results [0]);
+			auto pTargetEntity = gEnv->pEntitySystem->GetEntity(results[0]);
 
 			if (auto pInteractor = pTargetEntity->GetComponent<CEntityInteractionComponent>())
 			{
@@ -949,7 +949,7 @@ void CActor::OnActionBarUse(EntityId playerId, int actionBarId)
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() >= actionBarId)
 				{
-					auto verb = verbs [actionBarId - 1];
+					auto verb = verbs[actionBarId - 1];
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
 
 					pInteraction->OnInteractionStart();
@@ -977,7 +977,7 @@ void CActor::OnActionInspect(EntityId playerId)
 		auto results = m_pAwareness->GetNearDotFiltered();
 		if (results.size() > 0)
 		{
-			m_interactionEntityId = results [0];
+			m_interactionEntityId = results[0];
 			auto pInteractionEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
 
 			if (auto pInteractor = pInteractionEntity->GetComponent<CEntityInteractionComponent>())
@@ -986,7 +986,7 @@ void CActor::OnActionInspect(EntityId playerId)
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() > 0)
 				{
-					auto verb = verbs [0];
+					auto verb = verbs[0];
 
 					auto pDrsProxy = crycomponent_cast<IEntityDynamicResponseComponent*> (pInteractionEntity->CreateProxy(ENTITY_PROXY_DYNAMICRESPONSE));
 					pDrsProxy->GetResponseActor()->QueueSignal(verb);
@@ -1018,7 +1018,7 @@ void CActor::OnActionInteractionStart(EntityId playerId)
 		auto results = m_pAwareness->GetNearDotFiltered();
 		if (results.size() > 0)
 		{
-			m_interactionEntityId = results [0];
+			m_interactionEntityId = results[0];
 			auto pInteractionEntity = gEnv->pEntitySystem->GetEntity(m_interactionEntityId);
 
 			if (auto pInteractor = pInteractionEntity->GetComponent<CEntityInteractionComponent>())
@@ -1028,7 +1028,7 @@ void CActor::OnActionInteractionStart(EntityId playerId)
 				auto verbs = pInteractor->GetVerbs();
 				if (verbs.size() > 0)
 				{
-					auto verb = verbs [0];
+					auto verb = verbs[0];
 
 					// #HACK: Another test - just calling the interaction directly instead.
 					auto pInteraction = pInteractor->GetInteraction(verb)._Get();
@@ -1050,4 +1050,87 @@ void CActor::OnActionInteractionEnd(EntityId playerId)
 	CryLogAlways("Player stopped interacting with things.");
 
 	// #TODO: re-enable direct control of character via input
+}
+
+
+void CActor::OnActionJogToggle(EntityId playerId)
+{
+	m_isJogging = !m_isJogging;
+	CryLogAlways("Player toggled walking / jogging");
+}
+
+
+void CActor::OnActionSprintStart(EntityId playerId)
+{
+	m_isSprinting = true;
+	CryLogAlways("Player started sprinting");
+}
+
+
+void CActor::OnActionSprintStop(EntityId playerId)
+{
+	m_isSprinting = false;
+	CryLogAlways("Player stopped sprinting");
+}
+
+
+float CActor::GetMovementBaseSpeed(uint32 movementStateFlags) const
+{
+	float baseSpeed{ 0.0f };
+	float dirScale{ 1.0f };
+
+	// Work out a base for walking, jogging or sprinting.
+	if (IsSprinting())
+	{
+		baseSpeed = 6.3f;
+	}
+	else
+	{
+		if (IsJogging())
+			baseSpeed = 4.2f;
+		else
+			baseSpeed = 2.1f;
+	}
+
+	// Scale it based on their movement direction.
+	switch (movementStateFlags)
+	{
+	case EMovementStateFlags::Forward:
+		dirScale = 1.0f;
+		break;
+
+	case (EMovementStateFlags::Forward | EMovementStateFlags::Right):
+		dirScale = 0.9f;
+		break;
+
+	case (EMovementStateFlags::Forward | EMovementStateFlags::Left):
+		dirScale = 0.9f;
+		break;
+
+	case EMovementStateFlags::Right:
+		dirScale = 0.85f;
+		break;
+
+	case EMovementStateFlags::Left:
+		dirScale = 0.85f;
+		break;
+
+	case EMovementStateFlags::Backward:
+		dirScale = 0.71f;
+		break;
+
+	case (EMovementStateFlags::Backward | EMovementStateFlags::Right):
+		dirScale = 0.71f;
+		break;
+
+	case (EMovementStateFlags::Backward | EMovementStateFlags::Left):
+		dirScale = 0.71f;
+		break;
+
+	default:
+		dirScale = 1.0f;
+		break;
+	}
+
+	return baseSpeed * dirScale;
 }

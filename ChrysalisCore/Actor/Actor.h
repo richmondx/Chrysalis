@@ -8,6 +8,7 @@
 #include <Actor/ActorStance.h>
 #include <Actor/IActorEventListener.h>
 #include <CryAISystem/IAgent.h>
+#include <Player/Input/IPlayerInputComponent.h>
 //#include <Actor/Character/Movement/CharacterRotation.h>
 
 class CPlayer;
@@ -365,10 +366,10 @@ public:
 protected:
 
 	string m_geometry;
-	float m_mass { 82.0f };
-	string m_controllerDefinition { "sdk_tutorial3controllerdefs.xml" };
-	string m_scopeContext { "MainCharacter" };
-	string m_animationDatabase { "sdk_tutorial3database.adb" };
+	float m_mass{ 82.0f };
+	string m_controllerDefinition{ "sdk_tutorial3controllerdefs.xml" };
+	string m_scopeContext{ "MainCharacter" };
+	string m_animationDatabase{ "sdk_tutorial3database.adb" };
 
 	/** Called to indicate the entity must reset itself. This is often done during PostInit() and
 	additionally by the editor when you both enter and leave game mode. */
@@ -391,7 +392,7 @@ protected:
 
 
 	/** The movement controller. */
-	CActorMovementController* m_pMovementController { nullptr };
+	CActorMovementController* m_pMovementController{ nullptr };
 
 	/** The actor physics. */
 	SActorPhysics m_actorPhysics;
@@ -399,22 +400,22 @@ protected:
 
 private:
 	/** Specifies whether this instance is the client actor. */
-	bool m_isClient { false };
+	bool m_isClient{ false };
 
 	/** The actor's inventory. */
-	IInventory* m_pInventory { nullptr };
+	IInventory* m_pInventory{ nullptr };
 
 	/** The actor's animated character. */
-	IAnimatedCharacter* m_pAnimatedCharacter { nullptr };
+	IAnimatedCharacter* m_pAnimatedCharacter{ nullptr };
 
 	/** The action controller. */
-	IActionController* m_pActionController { nullptr };
+	IActionController* m_pActionController{ nullptr };
 
 	/** Context for the animation. */
-	SAnimationContext* m_pAnimationContext { nullptr };
+	SAnimationContext* m_pAnimationContext{ nullptr };
 
 	/** An component which is used to discover entities near the actor. */
-	CEntityAwarenessComponent* m_pAwareness { nullptr };
+	CEntityAwarenessComponent* m_pAwareness{ nullptr };
 
 	/**	A dynamic response proxy. **/
 	IEntityDynamicResponseComponent* m_pDrsComponent;
@@ -422,21 +423,21 @@ private:
 	// #HACK: to test switching movement and idle fragments. Should query physics instead.
 	// Keeping the actions here allows me to stop them, which is good for testing, but wrong in
 	// so many ways.
-	bool m_wasMovingLastFrame { false };
+	bool m_wasMovingLastFrame{ false };
 	IActionPtr m_pActionIdle;
 	IActionPtr m_pActionMove;
 
 	/** Identifier for the team. */
-	int m_teamId { 0 };
+	int m_teamId{ 0 };
 
 	/** If a player is controlling this character, this pointer will be valid. */
-	CPlayer* m_pAttachedPlayer { nullptr };
+	CPlayer* m_pAttachedPlayer{ nullptr };
 
 	/** The current state for a character. This is shared by a lot of the state machine code. */
 	SActorState m_actorState;
 
 	/** The move request keeps track of how we wish to move this character based on input, state machine, and movement controllers. */
-	SCharacterMoveRequest m_moveRequest {};
+	SCharacterMoveRequest m_moveRequest{};
 
 	/** A class that assists in working out animated character rotation. */
 	//CCharacterRotation* m_characterRotation;
@@ -497,13 +498,13 @@ public:
 		if (stance < 0 || stance > STANCE_LAST)
 			return &m_defaultStance;
 
-		return &m_stances [stance];
+		return &m_stances[stance];
 	}
 
 	EStance m_stance;
 	EStance m_desiredStance;
 	static SActorStance m_defaultStance;
-	SActorStance m_stances [STANCE_LAST];
+	SActorStance m_stances[STANCE_LAST];
 
 
 	// ***
@@ -676,7 +677,54 @@ public:
 
 private:
 	/** If we are interacting with an entity, it is this entity. */
-	EntityId m_interactionEntityId { INVALID_ENTITYID };
+	EntityId m_interactionEntityId{ INVALID_ENTITYID };
+
+
+	// ***
+	// *** Movement Requests
+	// ***
+
+public:
+
+	/**
+	Handle requests to toggle between walking and jogging.
+
+	\param	playerId	The entityId for the player who invoked this action.
+	*/
+	virtual void OnActionJogToggle(EntityId playerId);
+
+
+	/**
+	Handle requests to begin sprinting.
+
+	\param	playerId	The entityId for the player who invoked this action.
+	*/
+	virtual void OnActionSprintStart(EntityId playerId);
+
+
+	/**
+	Handle requests to stop sprinting.
+
+	\param	playerId	The entityId for the player who invoked this action.
+	*/
+	virtual void OnActionSprintStop(EntityId playerId);
+
+
+	/** Is the actor currently sprinting?  */
+	bool IsSprinting() const { return m_isSprinting; }
+
+	/** Is the actor currently jogging?  */
+	bool IsJogging() const { return m_isJogging; }
+
+	float GetMovementBaseSpeed(uint32 movementStateFlags) const;
+
+private:
+	/** The actor is sprinting. */
+	bool m_isSprinting{ false };
+
+	/** The actor is jogging. */
+	bool m_isJogging{ false };
+
 
 	// ***
 	// *** Misc

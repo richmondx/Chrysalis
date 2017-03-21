@@ -116,8 +116,6 @@ void CPlayerInputComponent::PostUpdate(float frameTime)
 void CPlayerInputComponent::ResetMovementState()
 {
 	m_movementStateFlags = EMovementStateFlags::None;
-	m_shouldSprint = false;
-	m_shouldRun = false;
 }
 
 
@@ -262,8 +260,8 @@ void CPlayerInputComponent::InitializeActionHandler()
 	// Jump.
 	m_actionHandler.AddHandler(ActionId("move_jump"), &CPlayerInputComponent::OnActionJump);
 
-	// Walk, run / jog, sprint.
-	m_actionHandler.AddHandler(ActionId("move_walkrun"), &CPlayerInputComponent::OnActionWalkRun);
+	// Walk, jog, sprint.
+	m_actionHandler.AddHandler(ActionId("move_walkjog"), &CPlayerInputComponent::OnActionWalkJog);
 	m_actionHandler.AddHandler(ActionId("move_sprint"), &CPlayerInputComponent::OnActionSprint);
 
 	// Stances under player control.
@@ -493,12 +491,14 @@ bool CPlayerInputComponent::OnActionSit(EntityId entityId, const ActionId& actio
 }
 
 
-bool CPlayerInputComponent::OnActionWalkRun(EntityId entityId, const ActionId& actionId, int activationMode, float value)
+bool CPlayerInputComponent::OnActionWalkJog(EntityId entityId, const ActionId& actionId, int activationMode, float value)
 {
 	if (activationMode == eAAM_OnPress)
 	{
-		m_shouldRun = !m_shouldRun;
-		CryLogAlways("Player toggled walking / running");
+		if (auto pCharacter = CPlayer::GetLocalCharacter())
+		{
+			pCharacter->OnActionJogToggle(entityId);
+		}
 	}
 
 	return false;
@@ -509,13 +509,17 @@ bool CPlayerInputComponent::OnActionSprint(EntityId entityId, const ActionId& ac
 {
 	if (activationMode == eAAM_OnRelease)
 	{
-		m_shouldSprint = false;
-		CryLogAlways("Player stopped sprinting");
+		if (auto pCharacter = CPlayer::GetLocalCharacter())
+		{
+			pCharacter->OnActionSprintStop(entityId);
+		}
 	}
 	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
 	{
-		m_shouldSprint = true;
-		CryLogAlways("Player sprinting");
+		if (auto pCharacter = CPlayer::GetLocalCharacter())
+		{
+			pCharacter->OnActionSprintStart(entityId);
+		}
 	}
 
 	return false;

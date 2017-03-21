@@ -81,6 +81,7 @@ void CSimpleAnimationComponent::OnPlayAnimation(string overrideAnimation)
 		CryCharAnimationParams animParams;
 		animParams.m_fPlaybackSpeed = m_animationSpeed;
 		animParams.m_nFlags = m_bLoopAnimation ? CA_LOOP_ANIMATION : 0;
+		//animParams.m_nFlags = CA_FADEOUT | CA_REPEAT_LAST_KEY;
 		pCharacter->GetISkeletonAnim()->StartAnimation(animation, animParams);
 	}
 	else

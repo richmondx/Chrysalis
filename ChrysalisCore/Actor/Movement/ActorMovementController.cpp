@@ -241,9 +241,9 @@ void CActorMovementController::ComputeMovementRequest()
 		// Player input always provides a unit or zero vector for the movement request.
 		const Vec3 unitMovement = pPlayerInput->GetMovement(movementDirection);
 		
-		// #HACK: movement speed is hard coded here right now...fix later.
-		// We are just setting it to 2.4m/s in the requested direction for now.
-		const Vec3 movement = unitMovement * 2.4f;
+		// #HACK: movement speed should be done much cleaner than this. We shouldn't need to mess
+		// around working out if they are jogging or sprinting. Move to CActor.
+		Vec3 movement = unitMovement * m_pActor->GetMovementBaseSpeed(pPlayerInput->GetMovementStateFlags());
 
 		// Rotation is handled differently in third person views.
 		if (pPlayer->IsThirdPerson())
