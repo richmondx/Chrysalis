@@ -47,7 +47,7 @@ void CContainerComponent::Initialize()
 	m_lockableComponent = pEntity->CreateComponent<CLockableComponent>();
 
 	// We want to supply interaction verbs.
-	auto m_interactor = pEntity->GetOrCreateComponent<CEntityInteractionComponent>();
+	m_interactor = pEntity->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
 		m_interactor->AddInteraction(std::make_shared<CInteractionOpenableOpen>(this));

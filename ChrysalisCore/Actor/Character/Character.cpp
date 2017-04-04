@@ -205,7 +205,6 @@ void CCharacter::PrePhysicsUpdate()
 
 
 		// Push the pre-physics event down to our state machine.
-		// #TODO: This should become an Actor prephysics event instead, so all derived classes can share it.
 		const SActorPrePhysicsData prePhysicsData(frameTime, movementRequest);
 		const SStateEventActorMovementPrePhysics prePhysicsEvent(&prePhysicsData);
 		StateMachineHandleEventMovement(STATE_DEBUG_APPEND_EVENT(prePhysicsEvent));
@@ -220,7 +219,6 @@ void CCharacter::PrePhysicsUpdate()
 		//}
 
 		// Bring the animation state of the character into line with it's requested state.
-		// #TODO: Make sure this happens - it'c commented out for now!
 		UpdateAnimationState(movementRequest);
 	}
 }

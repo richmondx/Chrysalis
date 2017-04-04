@@ -27,7 +27,7 @@ void CCompassComponent::Initialize()
 	m_pControlledAnimationComponent = GetEntity()->CreateComponent<CControlledAnimationComponent>();
 
 	// We want to supply interaction verbs.
-	auto m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
+	m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
 		m_interactor->AddInteraction(std::make_shared<CInteractionItemInspect>(this));

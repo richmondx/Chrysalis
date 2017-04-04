@@ -149,15 +149,15 @@ void CActorMovementController::OnResetState()
 
 	// Set it all to it's default state.
 	m_desiredSpeed = 0.0f;
-	m_bAtTarget = false;
-	m_bAimClamped = false;
-	m_bUsingLookIK = true;
-	m_bUsingAimIK = true;
-	m_targetStance = STANCE_NULL;
 	m_lookTarget.zero();
 	m_aimTarget.zero();
 	m_fireTarget.zero();
-	m_rotationRateZAxis = 0.0f;
+	m_bAtTarget = false;
+	m_bUsingLookIK = true;
+	m_bUsingAimIK = true;
+	m_bAimClamped = false;
+	m_targetStance = STANCE_NULL;
+	m_animTargetSpeed = -1.0f;
 
 	if (!GetISystem()->IsSerializingFile() == 1)
 		ComputeMovementState();
@@ -237,10 +237,10 @@ void CActorMovementController::ComputeMovementRequest()
 		// This is added as a delta movement.
 		// #TODO: speed has to be handled somewhere - not sure where is best yet.
 		const Quat movementDirection = pCamera ? pPlayer->GetCamera()->GetRotation() : IDENTITY;
-		
+
 		// Player input always provides a unit or zero vector for the movement request.
 		const Vec3 unitMovement = pPlayerInput->GetMovement(movementDirection);
-		
+
 		// #HACK: movement speed should be done much cleaner than this. We shouldn't need to mess
 		// around working out if they are jogging or sprinting. Move to CActor.
 		Vec3 movement = unitMovement * m_pActor->GetMovementBaseSpeed(pPlayerInput->GetMovementStateFlags());
@@ -317,74 +317,75 @@ void CActorMovementController::ComputeMovementRequest()
 
 void CActorMovementController::ComputeMovementState()
 {
-	IEntity* pEntity = m_pActor->GetEntity();
-
-	if (pEntity && m_pActor)
+	if (m_pActor)
 	{
-		m_movementState.minSpeed = -1.0f;
-		m_movementState.maxSpeed = -1.0f;
-		m_movementState.normalSpeed = -1.0f;
-
-		m_movementState.eyePosition = pEntity->GetWorldPos() + m_pActor->GetLocalEyePos();
-
-		// #TODO: ** NOW ** add in the look target, aimtarget, firetargets and set them to be 5 metres in front of where we are looking.
-		// I suspect these are what is causing him to rotate back around again.
-
-		//m_movementState.lookTarget = 
-
-		// Definitely not the right way to move them :D
-		if (m_movementRequest.HasDeltaMovement())
+		if (auto pEntity = m_pActor->GetEntity())
 		{
-			Vec3 vecMove = m_movementRequest.GetDeltaMovement();
+			m_movementState.minSpeed = -1.0f;
+			m_movementState.maxSpeed = -1.0f;
+			m_movementState.normalSpeed = -1.0f;
 
-			m_movementState.pos = pEntity->GetWorldPos();
-			m_movementState.desiredSpeed = 2.4f;  // #HACK: get speed multiplier from stance, etc. It's worth noting that a later piece of code is scaling this back to 1.0f presently. See if we need this happening here at all.
+			m_movementState.eyePosition = pEntity->GetWorldPos() + m_pActor->GetLocalEyePos();
 
-			m_movementState.isMoving = true;
-			m_movementState.movementDirection = vecMove.GetNormalizedSafe();
+			// #TODO: ** NOW ** add in the look target, aimtarget, firetargets and set them to be 5 metres in front of where we are looking.
+			// I suspect these are what is causing him to rotate back around again.
 
-			// #HACK: just sticking in a rough estimate for now to get raycasts / world queries working.
-			//m_movementState.eyeDirection = (m_lookTarget - m_movementState.eyePosition).GetNormalizedSafe(forward);
-			m_movementState.eyeDirection = m_movementRequest.GetDeltaMovement();
-		}
-		else
-		{
-			// #TODO: Check if we need to look out for falling / sliding movement when setting this value.
-			m_movementState.isMoving = false;
-		}
+			//m_movementState.lookTarget = 
 
-		// NOTE: try to keep code un-entangled.
-		auto pPlayer = CPlayer::GetLocalPlayer();
-		if (pPlayer)
-		{
-			// #HACK: For testing purposes.
-			m_movementState.isAiming = false;
-			//m_movementState.isAiming = true;
-			//m_movementState.aimDirection = (m_aimTarget - m_movementState.weaponPosition).GetNormalizedSafe((m_lookTarget - m_movementState.weaponPosition).GetNormalizedSafe(forward));
-			//m_movementState.aimDirection = pPlayer->GetCamera()->GetRotation().GetColumn1();
-		}
+			// Definitely not the right way to move them :D
+			if (m_movementRequest.HasDeltaMovement())
+			{
+				Vec3 vecMove = m_movementRequest.GetDeltaMovement();
 
-		// NOTE: try to keep code un-entangled.
-		{
-			// #HACK: For testing purposes.
-			//m_movementState.isFiring = false;
-			m_movementState.isFiring = false;
-			//m_movementState.fireTarget = m_fireTarget;
-			//m_movementState.fireDirection = (m_movementState.fireTarget - m_movementState.weaponPosition).GetNormalizedSafe(FORWARD_DIRECTION);
+				m_movementState.pos = pEntity->GetWorldPos();
+				m_movementState.desiredSpeed = 2.4f;  // #HACK: get speed multiplier from stance, etc. It's worth noting that a later piece of code is scaling this back to 1.0f presently. See if we need this happening here at all.
 
-			// #HACK:
-			m_movementState.isAlive = true;
-			m_movementState.isVisible = true;
+				m_movementState.isMoving = true;
+				m_movementState.movementDirection = vecMove.GetNormalizedSafe();
 
-			// Missing values - track these down and implement.
-			//m_movementState.stance = m_targetStance;
-			//m_movementState.animationEyeDirection = ;
-			//m_movementState.lastMovementDirection = ;
-			//m_movementState.minSpeed = ;
-			//m_movementState.maxSpeed = ;
-			//m_movementState.normalSpeed = ;
-			//m_movementState.slopeAngle = ;
-			//m_movementState.atMoveTarget = ;
+				// #HACK: just sticking in a rough estimate for now to get raycasts / world queries working.
+				//m_movementState.eyeDirection = (m_lookTarget - m_movementState.eyePosition).GetNormalizedSafe(forward);
+				m_movementState.eyeDirection = m_movementRequest.GetDeltaMovement();
+			}
+			else
+			{
+				// #TODO: Check if we need to look out for falling / sliding movement when setting this value.
+				m_movementState.isMoving = false;
+			}
+
+			// NOTE: try to keep code un-entangled.
+			auto pPlayer = CPlayer::GetLocalPlayer();
+			if (pPlayer)
+			{
+				// #HACK: For testing purposes.
+				m_movementState.isAiming = false;
+				//m_movementState.isAiming = true;
+				//m_movementState.aimDirection = (m_aimTarget - m_movementState.weaponPosition).GetNormalizedSafe((m_lookTarget - m_movementState.weaponPosition).GetNormalizedSafe(forward));
+				//m_movementState.aimDirection = pPlayer->GetCamera()->GetRotation().GetColumn1();
+			}
+
+			// NOTE: try to keep code un-entangled.
+			{
+				// #HACK: For testing purposes.
+				//m_movementState.isFiring = false;
+				m_movementState.isFiring = false;
+				//m_movementState.fireTarget = m_fireTarget;
+				//m_movementState.fireDirection = (m_movementState.fireTarget - m_movementState.weaponPosition).GetNormalizedSafe(FORWARD_DIRECTION);
+
+				// #HACK:
+				m_movementState.isAlive = true;
+				m_movementState.isVisible = true;
+
+				// Missing values - track these down and implement.
+				//m_movementState.stance = m_targetStance;
+				//m_movementState.animationEyeDirection = ;
+				//m_movementState.lastMovementDirection = ;
+				//m_movementState.minSpeed = ;
+				//m_movementState.maxSpeed = ;
+				//m_movementState.normalSpeed = ;
+				//m_movementState.slopeAngle = ;
+				//m_movementState.atMoveTarget = ;
+			}
 		}
 	}
 }
@@ -403,7 +404,6 @@ void CActorMovementController::FullSerialize(TSerialize ser)
 		ser.Value("lookTarget", m_lookTarget);
 		ser.Value("aimTarget", m_aimTarget);
 		ser.Value("animTargetSpeed", m_animTargetSpeed);
-		ser.Value("animTargetSpeedCounter", m_animTargetSpeedCounter);
 		ser.Value("fireTarget", m_fireTarget);
 		ser.EnumValue("targetStance", m_targetStance, STANCE_NULL, STANCE_LAST);
 
@@ -450,45 +450,45 @@ const float CActorMovementController::GetLowerBodyRotation(uint32 movementStateF
 	// direction the body is turned when moving in a given direction.
 	switch (movementStateFlags)
 	{
-		case EMovementStateFlags::Forward:
-			relativeDirection = 0.0f;
-			break;
+	case EMovementStateFlags::Forward:
+		relativeDirection = 0.0f;
+		break;
 
-		case (EMovementStateFlags::Forward | EMovementStateFlags::Right) :
-			relativeDirection = -45.0f;
-			break;
+	case (EMovementStateFlags::Forward | EMovementStateFlags::Right):
+		relativeDirection = -45.0f;
+		break;
 
-		case EMovementStateFlags::Right:
-			//relativeDirection = -90.0f;
-			relativeDirection = -45.0f;
-			break;
+	case EMovementStateFlags::Right:
+		//relativeDirection = -90.0f;
+		relativeDirection = -45.0f;
+		break;
 
-		case (EMovementStateFlags::Backward | EMovementStateFlags::Right) :
-			//relativeDirection = 45.0f;
-			relativeDirection = 0.0f;
-			break;
+	case (EMovementStateFlags::Backward | EMovementStateFlags::Right):
+		//relativeDirection = 45.0f;
+		relativeDirection = 0.0f;
+		break;
 
-		case EMovementStateFlags::Backward:
-			relativeDirection = 0.0f;
-			break;
+	case EMovementStateFlags::Backward:
+		relativeDirection = 0.0f;
+		break;
 
-		case (EMovementStateFlags::Backward | EMovementStateFlags::Left) :
-			//relativeDirection = -45.0f;
-			relativeDirection = 0.0f;
-			break;
+	case (EMovementStateFlags::Backward | EMovementStateFlags::Left):
+		//relativeDirection = -45.0f;
+		relativeDirection = 0.0f;
+		break;
 
-		case EMovementStateFlags::Left:
-			//relativeDirection = 90.0f;
-			relativeDirection = 45.0f;
-			break;
+	case EMovementStateFlags::Left:
+		//relativeDirection = 90.0f;
+		relativeDirection = 45.0f;
+		break;
 
-		case (EMovementStateFlags::Forward | EMovementStateFlags::Left) :
-			relativeDirection = 45.0f;
-			break;
+	case (EMovementStateFlags::Forward | EMovementStateFlags::Left):
+		relativeDirection = 45.0f;
+		break;
 
-		default:
-			relativeDirection = 0.0f;
-			break;
+	default:
+		relativeDirection = 0.0f;
+		break;
 	}
 
 	return relativeDirection;

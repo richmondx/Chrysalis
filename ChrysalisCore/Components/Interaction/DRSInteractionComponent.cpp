@@ -26,7 +26,7 @@ CRYREGISTER_CLASS(CDRSInteractionComponent);
 void CDRSInteractionComponent::Initialize()
 {
 	// Add new verbs to the interactor.
-	if (auto m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>())
+	if (m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>())
 	{
 		m_interactor->AddInteraction(std::make_shared<CInteractionDRS>(this));
 	}

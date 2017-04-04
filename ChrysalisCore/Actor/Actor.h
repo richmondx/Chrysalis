@@ -716,6 +716,15 @@ public:
 	/** Is the actor currently jogging?  */
 	bool IsJogging() const { return m_isJogging; }
 
+
+	/**
+	Return a base movement speed for this actor, given the direction (local to character) in which they are moving.
+	This allows for slower speeds when moving backwards or sideways. It doesn't take into account slope or terrain.
+	
+	\param	movementStateFlags The movement state flags.
+	
+	\return The movement base speed.
+	**/
 	float GetMovementBaseSpeed(uint32 movementStateFlags) const;
 
 private:

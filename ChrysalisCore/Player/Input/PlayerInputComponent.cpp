@@ -314,7 +314,7 @@ bool CPlayerInputComponent::OnActionMoveLeft(EntityId entityId, const ActionId& 
 	{
 		m_movementStateFlags &= ~EMovementStateFlags::Left;
 	}
-	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
+	else if (activationMode & (eAAM_OnPress | eAAM_OnHold))
 	{
 		m_movementStateFlags |= EMovementStateFlags::Left;
 	}
@@ -329,7 +329,7 @@ bool CPlayerInputComponent::OnActionMoveRight(EntityId entityId, const ActionId&
 	{
 		m_movementStateFlags &= ~EMovementStateFlags::Right;
 	}
-	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
+	else if (activationMode & (eAAM_OnPress | eAAM_OnHold))
 	{
 		m_movementStateFlags |= EMovementStateFlags::Right;
 	}
@@ -344,7 +344,7 @@ bool CPlayerInputComponent::OnActionMoveForward(EntityId entityId, const ActionI
 	{
 		m_movementStateFlags &= ~EMovementStateFlags::Forward;
 	}
-	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
+	else if (activationMode & (eAAM_OnPress | eAAM_OnHold))
 	{
 		m_movementStateFlags |= EMovementStateFlags::Forward;
 	}
@@ -359,7 +359,7 @@ bool CPlayerInputComponent::OnActionMoveBackward(EntityId entityId, const Action
 	{
 		m_movementStateFlags &= ~EMovementStateFlags::Backward;
 	}
-	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
+	else if (activationMode & (eAAM_OnPress | eAAM_OnHold))
 	{
 		m_movementStateFlags |= EMovementStateFlags::Backward;
 	}
@@ -514,7 +514,7 @@ bool CPlayerInputComponent::OnActionSprint(EntityId entityId, const ActionId& ac
 			pCharacter->OnActionSprintStop(entityId);
 		}
 	}
-	else if (activationMode && (eAAM_OnPress || eAAM_OnHold))
+	else if (activationMode & (eAAM_OnPress | eAAM_OnHold))
 	{
 		if (auto pCharacter = CPlayer::GetLocalCharacter())
 		{

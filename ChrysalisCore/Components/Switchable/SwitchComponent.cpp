@@ -25,7 +25,7 @@ void CSwitchComponent::Initialize()
 	m_pGeometryComponent = GetEntity()->CreateComponent<CGeometryComponent>();
 
 	// We want to supply interaction verbs.
-	auto m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
+	m_interactor = GetEntity()->GetOrCreateComponent<CEntityInteractionComponent>();
 	if (m_interactor)
 	{
 		m_switchTogglePtr = std::make_shared<CInteractionSwitchToggle>(this);
